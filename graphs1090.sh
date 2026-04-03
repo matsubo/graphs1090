@@ -13,14 +13,6 @@ mult() {
 div() {
 	echo $1 $2 | LC_ALL=C awk '{printf "%.9f", $1 / $2}'
 }
-function chk_enabled() {
-    case "${1,,}" in
-        1 | true | on | enabled | enable | yes | y | ok | always | set )
-            return 0
-        ;;
-    esac
-    return 1
-}
 
 
 lwidth=1096
@@ -111,26 +103,6 @@ if [[ "$colorscheme" == "dark" ]]; then
 
 
     AGRAY=2a2e31
-fi
-
-source /etc/default/graphs1090
-
-if [[ -n $ether ]]; then
-    ether="interface-${ether}"
-else
-    ether="$(ls ${DB}/localhost | grep -v 'interface-lo' | grep interface -m1)"
-fi
-
-if [[ -n $wifi ]]; then
-    wifi="interface-${wifi}"
-else
-    wifi="$(ls ${DB}/localhost | grep -v 'interface-lo' | grep interface -m2 | tail -n1)"
-fi
-
-if [[ -n $disk ]]; then
-    disk="disk-${disk}"
-else
-    disk="disk-$(grep -F -o -m 1 -e mmcblk0 -e mmcblk1 -e sda -e hda -e nvme0n1 </proc/diskstats || ls ${DB}/localhost | grep disk -m1)"
 fi
 
 
@@ -982,11 +954,6 @@ dump1090_graphs() {
     fi
 }
 
-dump1090_receiver_graphs() {
-	dump1090_graphs "$1" "$2" "$3" "$4" "$5"
-}
-
-
 period="$1"
 step="$3"
 END_TIME=$(date -d -1min '+%H:%M')
@@ -998,7 +965,7 @@ collectd_hostname="localhost"
 
 if [[ -z $1 ]]
 then
-	dump1090_receiver_graphs $collectd_hostname $dump1090_instance "ADS-B" "24h" "$step"
+	dump1090_graphs $collectd_hostname $dump1090_instance "ADS-B" "24h" "$step"
 else
-	dump1090_receiver_graphs $collectd_hostname $dump1090_instance "ADS-B" "$period" "$step"
+	dump1090_graphs $collectd_hostname $dump1090_instance "ADS-B" "$period" "$step"
 fi
