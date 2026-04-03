@@ -80,12 +80,6 @@ show_hide airspy_rssi-max.rrd airspy
 show_hide dump1090_misc-gain_db.rrd dump1090-misc
 
 
-if ! chk_enabled "$HIDE_SYSTEM"; then
-    show system
-else
-    hide system
-fi
-
 if [[ $all_large == "yes" ]]; then
     if grep -qs -e 'flex: 50%; // all_large' /usr/share/graphs1090/html/portal.css; then
         sed -i -e 's?flex: 50%; // all_large?flex: 100%; // all_large?' /usr/share/graphs1090/html/portal.css

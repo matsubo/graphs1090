@@ -6,9 +6,6 @@
 # other graphs are drawn at certain multiples of this interval (2h: 2x 8h: 4x 24h: 8x 48h: 16x 7d: 32x ....)
 DRAW_INTERVAL=60
 
-# set to 1 to enable fahrenheit instead of celsius
-fahrenheit=0
-
 # set range graph to either nautical, statute, or metric
 range=nautical
 # set the right axis unit: (leftaxis, nautical, statute, metric)
@@ -70,30 +67,13 @@ lr_rate_per_aircraft=
 # leave blank for a default of 0.1
 position_scaling=
 
-# disk stats displayed for device (i.e. mmc0 sda sdc)
-disk=
-
-# net stats displayed for these two devices (i.e. wlp3s0 wlan0 eth0 enp0s25)
-ether=
-wifi=
-
-
 # set time zone for rrdtool graphs
 #export TZ=Europe/Berlin
-
-# set temperature multiplier, on the pi this is 1000, on some platforms you might need to set it to 1
-TEMP_MULTIPLIER=1000
 
 # the text showing in the tab button
 WWW_TITLE="graphs1090"
 # the text shown at the top of the webpage
 WWW_HEADER="Performance Graphs"
-
-# set to yes to hide system graphs from the web page and not waste CPU either to create the pngs
-HIDE_SYSTEM=no
-# this does not turn off the data collection for the system stats as automatic changes to collectd.conf are somewhat complicated
-# you can use /usr/share/graphs1090/git/hide_system-collectd.conf though, that's up to you to copy to /etc/collectd/collectd.conf
-# that collectd.conf by default has 978 data collection disabled, if you want to enable it, uncomment the URL_978 line
 
 # this variable is ignored if /run/collectd/localhost exists, in that case /run/collectd is used
 # still leaving the variable here in case this change causes issues
