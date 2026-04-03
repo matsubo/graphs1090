@@ -55,8 +55,11 @@ try {
     }
 }
 
-if (usp.get('refreshInterval')) {
-    refreshInterval = usp.get('refreshInterval') * 1000;
+if (usp.getInt('refreshInterval')) {
+    const ri = usp.getInt('refreshInterval') * 1000;
+    if (ri >= 10000 && ri <= 3600000) {
+        refreshInterval = ri;
+    }
 }
 
 if (usp.get('timeframe')) {
@@ -67,9 +70,7 @@ if (usp.get('timeframe')) {
 
 function setGraph(id, src) {
     const img = document.getElementById(id + '-image');
-    const link = document.getElementById(id + '-link');
     if (img) img.src = src;
-    if (link) link.href = src;
 }
 
 function switchView(newTimeFrame) {
@@ -119,23 +120,6 @@ function switchView(newTimeFrame) {
         setGraph('dump1090-signal_978',   graphUrl('dump1090', 'signal_978'));
     }
 
-    const panelSystem = document.getElementById('panel_system');
-    if (panelSystem && panelSystem.style.display !== 'none') {
-        setGraph('system-cpu',             graphUrl('system', 'cpu'));
-        setGraph('system-memory',          graphUrl('system', 'memory'));
-        setGraph('system-df_root',         graphUrl('system', 'df_root'));
-        setGraph('system-disk_io_iops',    graphUrl('system', 'disk_io_iops'));
-        setGraph('system-disk_io_octets',  graphUrl('system', 'disk_io_octets'));
-
-        if (document.getElementById('system-eth0_bandwidth-image'))
-            setGraph('system-eth0_bandwidth', graphUrl('system', 'eth0_bandwidth'));
-        if (document.getElementById('system-network_bandwidth-image'))
-            setGraph('system-network_bandwidth', graphUrl('system', 'network_bandwidth'));
-        if (document.getElementById('system-temperature_imperial-image'))
-            setGraph('system-temperature_imperial', graphUrl('system', 'temperature_imperial'));
-        if (document.getElementById('system-temperature-image'))
-            setGraph('system-temperature', graphUrl('system', 'temperature'));
-    }
 
     // Update active button
     document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
@@ -145,7 +129,7 @@ function switchView(newTimeFrame) {
     window.history.replaceState(null, '', window.location.origin + pathName + '?timeframe=' + timeFrame);
 }
 
-let verbose = true;
+let verbose = false;
 let refreshTimer = null;
 let timersActive = false;
 
@@ -170,13 +154,6 @@ if (typeof document.addEventListener === 'undefined' || document.hidden === unde
 
 handleVisibilityChange();
 
-const cursorVT = document.querySelector('.vt');
-const cursorHL = document.querySelector('.hl');
-
-function crosshairListener(e) {
-    cursorVT.style.left = e.clientX + 'px';
-    cursorHL.style.top = e.clientY + 'px';
-}
 
 function isDarkTheme() {
     return document.documentElement.dataset.theme === 'dark';
@@ -197,13 +174,3 @@ function updateThemeButton() {
 
 updateThemeButton();
 
-function toggleCrosshair() {
-    const crosshairEl = document.getElementById('crosshair');
-    const show = crosshairEl.style.display === 'none';
-    crosshairEl.style.display = show ? 'block' : 'none';
-    if (show) {
-        document.addEventListener('mousemove', crosshairListener);
-    } else {
-        document.removeEventListener('mousemove', crosshairListener);
-    }
-}

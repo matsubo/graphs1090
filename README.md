@@ -12,18 +12,30 @@ Graphs for readsb (wiedehopf fork) and dump1090-fa (based on dump1090-tools by m
 
 Also works for other dump1090 variants supplying stats.json
 
-## Installation / Update to current version:
+## Installation
+
 ```
 sudo bash -c "$(curl -L -o - https://github.com/matsubo/graphs1090/raw/master/install.sh)"
+```
+
+## Update
+
+The install script checks the remote version and skips if already up to date:
+
+```
+sudo bash -c "$(curl -L -o - https://github.com/matsubo/graphs1090/raw/master/install.sh)"
+```
+
+To force a reinstall regardless of version:
+
+```
+sudo bash -c "$(curl -L -o - https://github.com/matsubo/graphs1090/raw/master/install.sh)" bash reinstall
 ```
 
 Note on data loss: When removing or losing power you will lose graph data generated after 23:42 of the previous day.
 To avoid that issue `sudo shutdown now` before unplugging the pi. See the section on reducing writes for more detail.
 
-Force reinstall: Download install.sh and run `bash install.sh reinstall`
-
-Install local changes: clone repository, make changes, run ./install.sh test to install local
-repository
+Install local changes: clone repository, make changes, run `./install.sh test` to install local repository.
 
 ## Configuration (optional):
 Edit the configuration file to change graph layout options, for example size:
