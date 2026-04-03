@@ -198,9 +198,8 @@ def handle_signal_stuff(data, stats, aircraft_data):
         elif has_key(stats['last1min'],'local') and has_key(stats['last1min']['local'],'gain_db'):
             stuff = stats['last1min']['local']
             dispatch_misc(stats['last1min']['end'], data, stuff, 'gain_db', 'dump1090_misc')
-    except:
+    except Exception as error:
         collectd.warning(str(error))
-        pass
 
     # Signal measurements - from the 1 min bucket
     if has_key(stats['last1min'],'local'):
