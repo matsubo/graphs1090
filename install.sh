@@ -163,7 +163,7 @@ for path in /sys/class/net/*
 do
     iface=$(basename $path)
     # no action on existing interfaces
-    fgrep -q 'Interface "'$iface'"' /etc/collectd/collectd.conf && continue
+    grep -Fq 'Interface "'$iface'"' /etc/collectd/collectd.conf && continue
     # only add interface starting with et en and wl
     case $iface in
         et*|en*|wl*)

@@ -56,8 +56,11 @@ try {
     }
 }
 
-if (usp.get('refreshInterval')) {
-    refreshInterval = usp.get('refreshInterval') * 1000;
+if (usp.getInt('refreshInterval')) {
+    const ri = usp.getInt('refreshInterval') * 1000;
+    if (ri >= 10000 && ri <= 3600000) {
+        refreshInterval = ri;
+    }
 }
 
 if (usp.get('timeframe')) {

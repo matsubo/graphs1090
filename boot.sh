@@ -33,10 +33,12 @@ else
 fi
 
 if [[ -n "$WWW_TITLE" ]]; then
-    sed -i -e "s#<title>.*</title>#<title>${WWW_TITLE}</title>#" "$IHTML"
+    safe_title=$(printf '%s' "$WWW_TITLE" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+    sed -i -e "s#<title>.*</title>#<title>${safe_title}</title>#" "$IHTML"
 fi
 if [[ -n "$WWW_HEADER" ]]; then
-    sed -i -e "s#<h1>.*</h1>#<h1>${WWW_HEADER}</h1>#" "$IHTML"
+    safe_header=$(printf '%s' "$WWW_HEADER" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+    sed -i -e "s#<h1>.*</h1>#<h1>${safe_header}</h1>#" "$IHTML"
 fi
 
 function checkrrd() {

@@ -212,23 +212,6 @@ def handle_signal_stuff(data, stats, aircraft_data):
                    values = [stats['last1min']['local']['signal']],
                    interval = 60)
 
-        if False and has_key(stats['last1min']['local'],'peak_signal'):
-          V.dispatch(plugin_instance = instance_name,
-                   host=host,
-                   type='dump1090_dbfs',
-                   type_instance='peak_signal',
-                   time=stats['last1min']['end'],
-                   values = [stats['last1min']['local']['peak_signal']],
-                   interval = 60)
-
-        if False and has_key(stats['last1min']['local'],'min_signal'):
-          V.dispatch(plugin_instance = instance_name,
-                   host=host,
-                   type='dump1090_dbfs',
-                   type_instance='min_signal',
-                   time=stats['last1min']['end'],
-                   values = [stats['last1min']['local']['min_signal']],
-                   interval = 60)
 
         if has_key(stats['last1min']['local'],'noise'):
           V.dispatch(plugin_instance = instance_name,
