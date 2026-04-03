@@ -198,9 +198,8 @@ def handle_signal_stuff(data, stats, aircraft_data):
         elif has_key(stats['last1min'],'local') and has_key(stats['last1min']['local'],'gain_db'):
             stuff = stats['last1min']['local']
             dispatch_misc(stats['last1min']['end'], data, stuff, 'gain_db', 'dump1090_misc')
-    except:
+    except Exception as error:
         collectd.warning(str(error))
-        pass
 
     # Signal measurements - from the 1 min bucket
     if has_key(stats['last1min'],'local'):
@@ -213,23 +212,6 @@ def handle_signal_stuff(data, stats, aircraft_data):
                    values = [stats['last1min']['local']['signal']],
                    interval = 60)
 
-        if False and has_key(stats['last1min']['local'],'peak_signal'):
-          V.dispatch(plugin_instance = instance_name,
-                   host=host,
-                   type='dump1090_dbfs',
-                   type_instance='peak_signal',
-                   time=stats['last1min']['end'],
-                   values = [stats['last1min']['local']['peak_signal']],
-                   interval = 60)
-
-        if False and has_key(stats['last1min']['local'],'min_signal'):
-          V.dispatch(plugin_instance = instance_name,
-                   host=host,
-                   type='dump1090_dbfs',
-                   type_instance='min_signal',
-                   time=stats['last1min']['end'],
-                   values = [stats['last1min']['local']['min_signal']],
-                   interval = 60)
 
         if has_key(stats['last1min']['local'],'noise'):
           V.dispatch(plugin_instance = instance_name,
@@ -745,10 +727,6 @@ def greatcircle(lat0, lon0, lat1, lon1):
     lon1 = lon1 * math.pi / 180.0;
     return 6371e3 * math.acos(math.sin(lat0) * math.sin(lat1) + math.cos(lat0) * math.cos(lat1) * math.cos(abs(lon0 - lon1)))
 
-def T(provisional):
-    now = time.time()
-    if provisional <= now + 60: return provisional
-    else: return now
 
 def perc(p, values):
     l = len(values)

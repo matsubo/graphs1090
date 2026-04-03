@@ -35,7 +35,7 @@ cat >/etc/cron.d/collectd_to_disk <<"EOF"
 EOF
 
 # remove legacy stuff
-rm -rf "$TARGET/graphs1090-writeback-backup1" "$TARGET/graphs1090-writeback-backup2"
+rm -rf "/usr/share/graphs1090/graphs1090-writeback-backup1" "/usr/share/graphs1090/graphs1090-writeback-backup2"
 
 rm -f /usr/share/graphs1090/noMalarky
 

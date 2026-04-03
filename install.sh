@@ -54,7 +54,7 @@ then
             if grep -qs -e 'Jammy Jellyfish' /etc/os-release; then
                 apt purge -y collectd || true
                 apt purge -y collectd-core || true
-                wget -O /tmp/collectd-core.deb http://mirrors.kernel.org/ubuntu/pool/universe/c/collectd/collectd-core_5.12.0-11_amd64.deb || true
+                wget -O /tmp/collectd-core.deb https://mirrors.kernel.org/ubuntu/pool/universe/c/collectd/collectd-core_5.12.0-11_amd64.deb || true
                 dpkg -i /tmp/collectd-core.deb || true
             fi
             if ! command -v collectd &>/dev/null; then
@@ -96,7 +96,8 @@ function getGIT() {
     popd; if ! cd /tmp || ! rm -rf "$TARGET"; then return 1; fi
     if git clone --depth 1 --single-branch --branch "$2" "$1" "$3"; then return 0; fi
     if wget -O "$tmp" "${REPO%".git"}/archive/$BRANCH.zip" && unzip "$tmp" -d "$tmp.folder"; then
-        if mv -fT "$tmp.folder/$(ls $tmp.folder)" "$TARGET"; then rm -rf "$tmp" "$tmp.folder"; return 0; fi
+        extracted=$(find "$tmp.folder" -maxdepth 1 -mindepth 1 -type d | head -1)
+        if [[ -n "$extracted" ]] && mv -fT "$extracted" "$TARGET"; then rm -rf "$tmp" "$tmp.folder"; return 0; fi
     fi
     rm -rf "$tmp" "$tmp.folder"; return 1
 }
@@ -162,7 +163,7 @@ for path in /sys/class/net/*
 do
     iface=$(basename $path)
     # no action on existing interfaces
-    fgrep -q 'Interface "'$iface'"' /etc/collectd/collectd.conf && continue
+    grep -Fq 'Interface "'$iface'"' /etc/collectd/collectd.conf && continue
     # only add interface starting with et en and wl
     case $iface in
         et*|en*|wl*)

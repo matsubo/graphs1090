@@ -1,5 +1,6 @@
 import collectd
 import math
+import sys
 import time
 import subprocess
 
@@ -15,8 +16,8 @@ def handle_read():
     try:
         f=open("/proc/meminfo", "r")
         contents=f.read()
-    except:
-        collectd.warning(sys.exc_info()[0])
+    except Exception as e:
+        collectd.warning(str(e))
         return
 
     data = {}
