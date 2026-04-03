@@ -4,7 +4,7 @@ set -e
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 renice 10 $$
 
-repo="https://github.com/wiedehopf/graphs1090"
+repo="https://github.com/matsubo/graphs1090"
 ipath=/usr/share/graphs1090
 install=0
 
