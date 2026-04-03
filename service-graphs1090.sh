@@ -30,10 +30,10 @@ if (( DRAW_INTERVAL < 1 )); then
     DRAW_INTERVAL=1
 fi
 
-if (( DRAW_INTERVAL < 20 )); then
-    GRAPH_DELAY=0
+if (( DRAW_INTERVAL < 40 )); then
+    GRAPH_DELAY=
 else
-    GRAPH_DELAY=0
+    GRAPH_DELAY=0.4
 fi
 
 # use zero delay for the first generation of graphs to speed it up
@@ -54,19 +54,12 @@ hour_done=0
 while wait;
 do
     SEC=$(( 10#$(date -u +%s) ))
-    EARLY=$(( DRAW_INTERVAL * 3 / 4 - (SEC % DRAW_INTERVAL) ))
-    #echo $(( SEC % DRAW_INTERVAL )) $EARLY $(( DRAW_INTERVAL + EARLY - 1))
-    if (( EARLY < -1 )); then
-        sleep $(( DRAW_INTERVAL + EARLY - 1))
-        continue
-    elif (( EARLY > 0 )); then
-        sleep $EARLY
-    fi
-    if (( EARLY == -1 )); then
-        sleep $(( $DRAW_INTERVAL - 1 )) & # wait in the while condition
-    else
-        sleep $DRAW_INTERVAL & # wait in the while condition
-    fi
+
+    DRAW_OFFSET=$(( DRAW_INTERVAL * 2 / 3 + $RANDOM % (DRAW_INTERVAL / 8 + 1)))
+
+    sleep "$(( DRAW_INTERVAL - ((SEC - DRAW_OFFSET) % DRAW_INTERVAL) )).$RANDOM"
+
+    SEC=$(( 10#$(date -u +%s) ))
 
     m=$(( SEC / DRAW_INTERVAL))
 
