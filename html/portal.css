@@ -152,27 +152,6 @@ h1 {
   .column { flex: 100%; }
 }
 
-/* ── Crosshair ─────────────────────────────────────── */
-.cursor {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  pointer-events: none;
-}
-
-.vt {
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 1px;
-  background: rgba(59, 130, 246, 0.5);
-}
-
-.hl {
-  position: absolute;
-  left: 0; right: 0;
-  height: 1px;
-  background: rgba(59, 130, 246, 0.5);
-}
 
 /* ── Footer ────────────────────────────────────────── */
 .container > p {

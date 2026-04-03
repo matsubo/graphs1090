@@ -208,22 +208,3 @@ if (typeof document.addEventListener === "undefined" || document.hidden === unde
 handleVisibilityChange();
 
 
-const cursorVT = document.querySelector('.vt')
-const cursorHL = document.querySelector('.hl')
-
-function crosshairListener(e) {
-    cursorVT.setAttribute('style', `left: ${e.clientX}px;`)
-    cursorHL.setAttribute('style', `top: ${e.clientY}px;`)
-}
-
-let crosshair = false;
-function toggleCrosshair() {
-    crosshair = !crosshair;
-    if (crosshair) {
-        document.addEventListener('mousemove', crosshairListener);
-        $("#crosshair").show();
-    } else {
-        document.removeEventListener('mousemove', crosshairListener);
-        $("#crosshair").hide();
-    }
-}
