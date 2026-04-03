@@ -70,7 +70,9 @@ if (usp.get('timeframe')) {
 
 function setGraph(id, src) {
     const img = document.getElementById(id + '-image');
+    const link = document.getElementById(id + '-link');
     if (img) img.src = src;
+    if (link) link.href = src;
 }
 
 function switchView(newTimeFrame) {
