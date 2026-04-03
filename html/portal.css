@@ -52,15 +52,10 @@ h1 {
     padding: 8px 12px;
 }
 
-/* Sticky time-frame bar */
-.sticky-bar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg);
+/* Time-frame bar */
+.btn-bar {
     padding: 5px 0;
     text-align: center;
-    border-bottom: 1px solid var(--border);
 }
 
 /* Button group */
@@ -151,8 +146,7 @@ h1 {
     .column { padding: 3px; }
 }
 
-/* Spacers */
-.padding { height: 10px; }
+/* Spacer */
 #push { height: 40px; }
 
 /* Footer */
