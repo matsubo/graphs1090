@@ -54,5 +54,5 @@ join -o 1.2 1.3 1.4 2.2 ${tmp}/tmp1 ${tmp}/aircraft > $data_dir/$date
 sed -i 's/nan/0/g' $data_dir/$date
 
 # some cleanup
-rm -f $(find $data_dir -type f | sort | head -n-450)
+find "$data_dir" -maxdepth 1 -type f -print0 | sort -z | head -zn -450 | xargs -0 -r rm -f
 rm -rf "${tmp}"

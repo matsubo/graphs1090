@@ -96,7 +96,8 @@ function getGIT() {
     popd; if ! cd /tmp || ! rm -rf "$TARGET"; then return 1; fi
     if git clone --depth 1 --single-branch --branch "$2" "$1" "$3"; then return 0; fi
     if wget -O "$tmp" "${REPO%".git"}/archive/$BRANCH.zip" && unzip "$tmp" -d "$tmp.folder"; then
-        if mv -fT "$tmp.folder/$(ls $tmp.folder)" "$TARGET"; then rm -rf "$tmp" "$tmp.folder"; return 0; fi
+        extracted=$(find "$tmp.folder" -maxdepth 1 -mindepth 1 -type d | head -1)
+        if [[ -n "$extracted" ]] && mv -fT "$extracted" "$TARGET"; then rm -rf "$tmp" "$tmp.folder"; return 0; fi
     fi
     rm -rf "$tmp" "$tmp.folder"; return 1
 }
