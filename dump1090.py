@@ -727,10 +727,6 @@ def greatcircle(lat0, lon0, lat1, lon1):
     lon1 = lon1 * math.pi / 180.0;
     return 6371e3 * math.acos(math.sin(lat0) * math.sin(lat1) + math.cos(lat0) * math.cos(lat1) * math.cos(abs(lon0 - lon1)))
 
-def T(provisional):
-    now = time.time()
-    if provisional <= now + 60: return provisional
-    else: return now
 
 def perc(p, values):
     l = len(values)

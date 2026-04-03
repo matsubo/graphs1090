@@ -179,7 +179,7 @@ function switchView(newTimeFrame) {
     window.history.replaceState("object or string", "Title", url);
 }
 
-let verbose = true;
+let verbose = false;
 let refreshTimer = null;
 let timersActive = false;
 
