@@ -1,79 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Design tokens ─────────────────────────────────── */
+:root {
+  --bg:          #0b0f14;
+  --surface:     #111720;
+  --surface-2:   #18212e;
+  --border:      #1f2d3d;
+  --text:        #d9e4f0;
+  --text-muted:  #566d87;
+  --accent:      #3b82f6;
+  --accent-dim:  #1d3a60;
+  --radius:      6px;
+  --font-ui:     'Plus Jakarta Sans', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+}
+
+/* ── Reset & base ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
 html, body {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
-#footer {
-    height: 60px;
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Layout ────────────────────────────────────────── */
+.container {
+  max-width: 100%;
+  width: max-content;
+  padding: 16px 16px;
 }
-#push {
-    height: 60px;
+
+#push { height: 48px; }
+
+/* ── Header ────────────────────────────────────────── */
+h1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 12px 0;
+  padding: 16px 0 0 4px;
 }
-#wrapper {
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -60px;
+
+/* ── Sticky time-range bar ─────────────────────────── */
+.sticky-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 4px;
+  text-align: left;
 }
-.credits {
-    margin: 20px 0;
-}
-.padding {
-    height: 15px;
-}
-.row {
-  display: flex; // all_large2
+
+.btn-group {
+  display: flex;
   flex-wrap: wrap;
-  padding: 0 0px;
-  margin-right: 0px;
-  margin-left: 0px;
+  gap: 4px;
+}
+
+.btn {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: #2a3f58;
+}
+
+.btn.active,
+.btn:focus {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* ── Panel / card ──────────────────────────────────── */
+.padding { height: 12px; }
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.panel-heading {
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
 }
 
 .panel-body {
-  padding: 10px 10px;
+  padding: 12px;
 }
+
+/* ── Graph grid ────────────────────────────────────── */
+.row {
+  display: flex; /* all_large2 */
+  flex-wrap: wrap;
+  margin: 0;
+}
+
 .column {
-  flex: 50%; // all_large
+  flex: 50%; /* all_large */
   max-width: 100%;
-  padding: 10px 10px;
+  padding: 6px;
 }
 
 .column img {
-  vertical-align: middle;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
- .container {
-  padding-top: 60px;
-  width: max-content;
+  margin: 0 auto;
   max-width: 100%;
-  padding: 8px 8px;
+  border-radius: 4px;
+  vertical-align: middle;
+  transition: opacity 0.2s;
 }
 
-
-@media screen and (max-width: 1000px) {
-  .column {
-    flex: 100%;
-    max-width: 100%;
-  }
+.column img:hover {
+  opacity: 0.9;
 }
 
+@media (max-width: 1000px) {
+  .column { flex: 100%; }
+}
 
+/* ── Crosshair ─────────────────────────────────────── */
 .cursor {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
+  inset: 0;
+  z-index: 999;
   pointer-events: none;
 }
 
-.sticky-bar {
-  top: 0;
-  position: sticky;
-  z-index: 1;
-  padding: 2px;
-  text-align: center;
+.vt {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: rgba(59, 130, 246, 0.5);
 }
+
+.hl {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* ── Footer ────────────────────────────────────────── */
+.container > p {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 8px 4px;
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.container > p a {
+  color: var(--text-muted);
+}
+
+.container > p a:hover {
+  color: var(--accent);
+}
+
+/* ── Bootstrap override: kill default navbar/panel chrome ── */
+.panel-default { border-color: var(--border); }
+.btn-default { /* handled above */ }
+.img-responsive { max-width: 100%; height: auto; }
+.text-center { text-align: center; }
