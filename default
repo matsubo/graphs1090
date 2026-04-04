@@ -42,7 +42,7 @@ swidth=619
 sheight=324
 
 # enable data collection for caius scatter graphs
-enable_scatter=no
+enable_scatter=yes
 
 # set custom y-axis upper limits for the individual graphs
 # for automatic upper limits leave them blank
