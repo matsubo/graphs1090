@@ -510,7 +510,7 @@ local_trailing_rate_graph() {
 		"$1.tmp" \
 		--end "$END_TIME" \
 		--start end-$4 \
-		$big \
+		$small \
 		--slope-mode \
 		--title "$3 Message Rate" \
 		--vertical-label "Messages/Second" \
