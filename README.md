@@ -3,11 +3,9 @@
 [![GitHub issues](https://img.shields.io/github/issues/matsubo/graphs1090)](https://github.com/matsubo/graphs1090/issues)
 [![GitHub stars](https://img.shields.io/github/stars/matsubo/graphs1090)](https://github.com/matsubo/graphs1090/stargazers)
 
-![Screenshot](https://raw.githubusercontent.com/wiedehopf/graphs1090/screenshots/screenshot1.png)
-![Screenshot](https://raw.githubusercontent.com/wiedehopf/graphs1090/screenshots/screenshot2.png)
+![Screenshot](screenshots/screenshot.png)
 
 # graphs1090
-![Screenshot](https://raw.githubusercontent.com/wiedehopf/graphs1090/screenshots/messages_24h.png)
 Graphs for readsb (wiedehopf fork) and dump1090-fa (based on dump1090-tools by mutability)
 
 Also works for other dump1090 variants supplying stats.json
