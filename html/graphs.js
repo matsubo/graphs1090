@@ -182,14 +182,11 @@ async function loadScatter() {
     const canvas = document.getElementById('scatter-canvas');
     if (!canvas) return;
 
-    // find latest scatter data file
     let data;
     try {
-        const index = await fetch('scatter/').then(r => r.text());
-        const files = [...index.matchAll(/href="(\d{4}-\d{2}-\d{2})"/g)].map(m => m[1]).sort();
-        if (!files.length) return;
-        const latest = files[files.length - 1];
-        const text = await fetch('scatter/' + latest).then(r => r.text());
+        const resp = await fetch('scatter/latest');
+        if (!resp.ok) return;
+        const text = await resp.text();
         data = text.trim().split('\n').map(l => l.trim().split(/\s+/).map(Number)).filter(r => r.length === 4);
     } catch (e) { return; }
 
