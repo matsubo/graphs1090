@@ -208,7 +208,7 @@ async function loadScatter() {
             splitLine: { lineStyle: { opacity: 0.2 } }
         },
         yAxis: {
-            name: 'Aircraft',
+            name: 'Aircraft Seen (avg)',
             nameLocation: 'middle',
             nameGap: 35,
             type: 'value',
