@@ -217,7 +217,7 @@ async function loadScatter() {
         series: [{
             type: 'scatter',
             symbolSize: 4,
-            data: data.map(r => [r[0], r[3]]),
+            data: data.map(r => [+(r[0] / 1852).toFixed(1), r[3]]),
             itemStyle: { opacity: 0.6 }
         }],
         grid: { left: 60, right: 20, top: 20, bottom: 50 }
