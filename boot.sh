@@ -72,6 +72,15 @@ show_hide dump1090_messages-messages_978.rrd dump978
 show_hide airspy_rssi-max.rrd airspy
 show_hide dump1090_misc-gain_db.rrd dump1090-misc
 
+# scatter plot: show panel and symlink data dir if enabled
+scatter_dir=/var/lib/graphs1090/scatter
+if [[ "$enable_scatter" == "yes" ]] && [[ -d "$scatter_dir" ]]; then
+    ln -snf "$scatter_dir" /usr/share/graphs1090/html/scatter
+    show scatter
+else
+    hide scatter
+fi
+
 if [[ $all_large == "yes" ]]; then
     if grep -qs -e 'flex: 50%; // all_large' /usr/share/graphs1090/html/portal.css; then
         sed -i -e 's?flex: 50%; // all_large?flex: 100%; // all_large?' /usr/share/graphs1090/html/portal.css

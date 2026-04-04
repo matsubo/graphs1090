@@ -176,3 +176,56 @@ function updateThemeButton() {
 
 updateThemeButton();
 
+async function loadScatter() {
+    const panel = document.getElementById('panel_scatter');
+    if (!panel || panel.style.display === 'none') return;
+    const canvas = document.getElementById('scatter-canvas');
+    if (!canvas) return;
+
+    // find latest scatter data file
+    let data;
+    try {
+        const index = await fetch('scatter/').then(r => r.text());
+        const files = [...index.matchAll(/href="(\d{4}-\d{2}-\d{2})"/g)].map(m => m[1]).sort();
+        if (!files.length) return;
+        const latest = files[files.length - 1];
+        const text = await fetch('scatter/' + latest).then(r => r.text());
+        data = text.trim().split('\n').map(l => l.trim().split(/\s+/).map(Number)).filter(r => r.length === 4);
+    } catch (e) { return; }
+
+    const dark = isDarkTheme();
+    const W = canvas.offsetWidth || 800;
+    const H = 300;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = dark ? '#1c1c1f' : '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    const pad = 40;
+    const maxRange = Math.max(...data.map(r => r[0]), 1);
+    const maxAircraft = Math.max(...data.map(r => r[3]), 1);
+
+    ctx.fillStyle = dark ? 'rgba(91,158,255,0.6)' : 'rgba(0,87,216,0.5)';
+    for (const [range, , , aircraft] of data) {
+        const x = pad + (range / maxRange) * (W - pad * 2);
+        const y = H - pad - (aircraft / maxAircraft) * (H - pad * 2);
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // axis labels
+    ctx.fillStyle = dark ? '#71717a' : '#6b7280';
+    ctx.font = '11px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Max Range (NM)', W / 2, H - 4);
+    ctx.save();
+    ctx.translate(12, H / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Aircraft', 0, 0);
+    ctx.restore();
+}
+
+loadScatter();

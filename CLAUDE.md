@@ -100,4 +100,4 @@ Use `release.sh` — never bump version or create releases manually:
 ./release.sh --minor   # minor bump: 1.1.2 → 1.2.0
 ```
 
-The script updates `version`, commits, pushes, tags, and creates the GitHub release in one step.
+The script updates `version`, commits, pushes, and tags. GitHub Actions (`release.yml`) automatically creates the GitHub release when the tag is pushed.

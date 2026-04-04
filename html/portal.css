@@ -55,15 +55,18 @@ h1 {
 /* Time-frame bar */
 .btn-bar {
     padding: 5px 0;
-    text-align: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Button group */
 .btn-group {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 3px;
-    justify-content: center;
+    justify-content: flex-start;
+    min-width: max-content;
+    padding: 0 4px;
 }
 
 .btn {
@@ -131,6 +134,10 @@ h1 {
     margin: 0 auto;
     max-width: 100%;
     height: auto;
+}
+
+:root[data-theme="dark"] .img-responsive {
+    filter: invert(1) hue-rotate(180deg);
 }
 
 .text-center { text-align: center; }

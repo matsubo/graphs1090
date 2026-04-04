@@ -1,0 +1,24 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shell syntax check
+        run: |
+          bash -n graphs1090.sh
+          bash -n boot.sh
+          bash -n install.sh
+          bash -n service-graphs1090.sh
+          bash -n malarky.sh
+          bash -n scatter.sh
+          bash -n release.sh
+
+      - name: Python syntax check
+        run: |
+          python3 -m py_compile dump1090.py
+          python3 -m py_compile system_stats.py

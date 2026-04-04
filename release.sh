@@ -21,4 +21,4 @@ git commit -m "chore: bump version to ${new}"
 git push origin master
 git tag "v${new}"
 git push origin "v${new}"
-gh release create "v${new}" --generate-notes
+echo "Tagged v${new} — GitHub Actions will create the release automatically."
