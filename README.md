@@ -35,6 +35,13 @@ To avoid that issue `sudo shutdown now` before unplugging the pi. See the sectio
 
 Install local changes: clone repository, make changes, run `./install.sh test` to install local repository.
 
+## Releasing (maintainers)
+
+```bash
+./release.sh           # patch bump: 1.1.2 → 1.1.3
+./release.sh --minor   # minor bump: 1.1.2 → 1.2.0
+```
+
 ## Configuration (optional):
 Edit the configuration file to change graph layout options, for example size:
 ```

@@ -91,7 +91,13 @@ There is no automated test suite. Manual verification:
 2. Open `http://<pi-ip>/graphs1090` — verify panels load and time buttons switch graphs
 3. Run `sudo bash /usr/share/graphs1090/boot.sh nographs` — check show/hide logic runs cleanly
 
-## Branch
+## Releasing
 
-Active development branch: `remove-os-stats`
-Open PR: https://github.com/matsubo/graphs1090/pull/1
+Use `release.sh` — never bump version or create releases manually:
+
+```bash
+./release.sh           # patch bump: 1.1.2 → 1.1.3
+./release.sh --minor   # minor bump: 1.1.2 → 1.2.0
+```
+
+The script updates `version`, commits, pushes, tags, and creates the GitHub release in one step.
