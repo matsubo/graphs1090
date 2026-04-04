@@ -179,50 +179,51 @@ updateThemeButton();
 async function loadScatter() {
     const panel = document.getElementById('panel_scatter');
     if (!panel || panel.style.display === 'none') return;
-    const canvas = document.getElementById('scatter-canvas');
-    if (!canvas) return;
+    const el = document.getElementById('scatter-canvas');
+    if (!el || typeof echarts === 'undefined') return;
 
     let data;
     try {
         const resp = await fetch('scatter/latest');
         if (!resp.ok) return;
         const text = await resp.text();
-        data = text.trim().split('\n').map(l => l.trim().split(/\s+/).map(Number)).filter(r => r.length === 4);
+        data = text.trim().split('\n')
+            .map(l => l.trim().split(/\s+/).map(Number))
+            .filter(r => r.length === 4 && r[0] > 0);
     } catch (e) { return; }
 
     const dark = isDarkTheme();
-    const W = canvas.offsetWidth || 800;
-    const H = 300;
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext('2d');
+    const chart = echarts.init(el, dark ? 'dark' : null);
 
-    ctx.fillStyle = dark ? '#1c1c1f' : '#ffffff';
-    ctx.fillRect(0, 0, W, H);
+    chart.setOption({
+        backgroundColor: 'transparent',
+        tooltip: {
+            formatter: p => `Range: ${p.value[0].toFixed(1)} NM<br>Aircraft: ${p.value[1]}`
+        },
+        xAxis: {
+            name: 'Max Range (NM)',
+            nameLocation: 'middle',
+            nameGap: 30,
+            type: 'value',
+            splitLine: { lineStyle: { opacity: 0.2 } }
+        },
+        yAxis: {
+            name: 'Aircraft',
+            nameLocation: 'middle',
+            nameGap: 35,
+            type: 'value',
+            splitLine: { lineStyle: { opacity: 0.2 } }
+        },
+        series: [{
+            type: 'scatter',
+            symbolSize: 4,
+            data: data.map(r => [r[0], r[3]]),
+            itemStyle: { opacity: 0.6 }
+        }],
+        grid: { left: 60, right: 20, top: 20, bottom: 50 }
+    });
 
-    const pad = 40;
-    const maxRange = Math.max(...data.map(r => r[0]), 1);
-    const maxAircraft = Math.max(...data.map(r => r[3]), 1);
-
-    ctx.fillStyle = dark ? 'rgba(91,158,255,0.6)' : 'rgba(0,87,216,0.5)';
-    for (const [range, , , aircraft] of data) {
-        const x = pad + (range / maxRange) * (W - pad * 2);
-        const y = H - pad - (aircraft / maxAircraft) * (H - pad * 2);
-        ctx.beginPath();
-        ctx.arc(x, y, 2, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    // axis labels
-    ctx.fillStyle = dark ? '#71717a' : '#6b7280';
-    ctx.font = '11px system-ui';
-    ctx.textAlign = 'center';
-    ctx.fillText('Max Range (NM)', W / 2, H - 4);
-    ctx.save();
-    ctx.translate(12, H / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Aircraft', 0, 0);
-    ctx.restore();
+    window.addEventListener('resize', () => chart.resize());
 }
 
 loadScatter();
