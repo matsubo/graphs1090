@@ -26,11 +26,6 @@ fi
 [[ -f /usr/lib/bash/sleep ]] && enable -f /usr/lib/bash/sleep sleep || true
 
 IHTML=/usr/share/graphs1090/html/index.html
-if [[ $colorscheme == "dark" ]]; then
-    sed -i -e 's/href="bootstrap.custom..*.css"/href="bootstrap.custom.dark.css"/' "$IHTML"
-else
-    sed -i -e 's/href="bootstrap.custom..*.css"/href="bootstrap.custom.light.css"/' "$IHTML"
-fi
 
 if [[ -n "$WWW_TITLE" ]]; then
     safe_title=$(printf '%s' "$WWW_TITLE" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
@@ -81,27 +76,9 @@ else
     hide scatter
 fi
 
-if [[ $all_large == "yes" ]]; then
-    if grep -qs -e 'flex: 50%; // all_large' /usr/share/graphs1090/html/portal.css; then
-        sed -i -e 's?flex: 50%; // all_large?flex: 100%; // all_large?' /usr/share/graphs1090/html/portal.css
-        sed -i -e 's?display: flex; // all_large2?display: inline; // all_large2?' /usr/share/graphs1090/html/portal.css
-    fi
-else
-    if ! grep -qs -e 'flex: 50%; // all_large' /usr/share/graphs1090/html/portal.css; then
-        sed -i -e 's?flex: 100%; // all_large?flex: 50%; // all_large?' /usr/share/graphs1090/html/portal.css
-        sed -i -e 's?display: inline; // all_large2?display: flex; // all_large2?' /usr/share/graphs1090/html/portal.css
-    fi
-fi
-
 if [[ $1 == "nographs" ]]; then
 	exit 0
 fi
-
-# disable this for the moment
-#if rrdtool info /var/lib/collectd/rrd/localhost/system_stats/memory-used.rrd | grep -qs 'MIN'; then
-	#cp -T -r -n /var/lib/collectd/rrd/localhost /var/lib/collectd/rrd/rme_rra_backup
-	#/usr/share/graphs1090/rem_rra.sh /var/lib/collectd/rrd/localhost/
-#fi
 
 for i in {1..30}; do
     if [[ -f $DB/localhost/dump1090-localhost/dump1090_dbfs-NaN.rrd ]]; then break; fi

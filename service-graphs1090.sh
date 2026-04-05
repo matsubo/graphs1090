@@ -41,12 +41,8 @@ fi
 wait || true;
 
 graphs() {
-	#echo "Generating $1 graphs"
 	/usr/share/graphs1090/graphs1090.sh $1 $GRAPH_DELAY &>/dev/null
 }
-
-counter=0
-hour_done=0
 
 # load bash sleep builtin if available
 [[ -f /usr/lib/bash/sleep ]] && enable -f /usr/lib/bash/sleep sleep || true

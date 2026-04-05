@@ -131,18 +131,15 @@ function switchView(newTimeFrame) {
     window.history.replaceState(null, '', window.location.origin + pathName + '?timeframe=' + timeFrame);
 }
 
-let verbose = false;
 let refreshTimer = null;
 let timersActive = false;
 
 function handleVisibilityChange() {
     if (document.hidden && timersActive) {
-        verbose && console.log(new Date().toLocaleTimeString() + ' visibility change: stopping timers');
         clearTimeout(refreshTimer);
         timersActive = false;
     }
     if (!document.hidden && !timersActive) {
-        verbose && console.log(new Date().toLocaleTimeString() + ' visibility change: starting timers');
         timersActive = true;
         switchView();
     }

@@ -80,11 +80,7 @@ if [[ "$colorscheme" == "dark" ]]; then
 
     LGREEN=1db992
     DGREEN=5cb85c
-    GREEN=3d532d
-
     GREEN=386619
-
-
 
     LBLUE=7fc7ff
     BLUE=1cb992
@@ -740,8 +736,6 @@ df_counts() {
 			graphs+=("LINE1.5:df${df}#${colors[$i]}:DF${df}")
 			graphs+=("GPRINT:df${df}:LAST:%4.1lf")
 		fi
-		#echo "${defines[$i]}"
-		#echo "${graphs[$i]}"
 	done
 	rrdtool graph \
 		"$1.tmp" \

@@ -69,8 +69,8 @@ The OS system graphs (CPU, memory, disk I/O, network bandwidth, temperature) wer
 
 - `graphs1090.sh` is ~970 lines — exceeds the 800-line guideline but splitting it is non-trivial
 - `dump1090.py` has functions exceeding 50 lines (`read_1090` ~230 lines, `read_978` ~180 lines)
-- jQuery 3.6.4 is outdated (has CVEs); upgrade requires replacing the bundled file
 - Unquoted variables remain in several shell scripts (pre-existing; fix incrementally)
+- `tag.sh` is superseded by `release.sh` and can be removed
 
 ## Commit conventions
 

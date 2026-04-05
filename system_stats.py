@@ -1,8 +1,5 @@
 import collectd
-import math
-import sys
 import time
-import subprocess
 
 def handle_config(root):
 

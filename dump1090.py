@@ -48,10 +48,6 @@ def handle_config(root):
                                        data=(instance_name, 'localhost', url_978),
                                        name='dump978.' + instance_name,
                                        interval=60)
-            else:
-                pass
-                # silence this warning ...
-                # collectd.warning('No 978 URL defined in /etc/collectd/collectd.conf for ' + instance_name)
 
         else:
             collectd.warning('Ignored config entry: ' + child.key)
@@ -105,7 +101,6 @@ def dispatch_quartiles(data, stats, name):
     instance_name,host,url = data
     for index in ['min', 'p5', 'q1', 'median', 'q3', 'p95', 'max']:
         if has_key(quart, index):
-            #collectd.warning(index + str(quart[index]))
             V.dispatch(plugin_instance = instance_name,
                     host = host,
                     type = 'airspy_' + name,
