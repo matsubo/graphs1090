@@ -30,18 +30,11 @@ if (( DRAW_INTERVAL < 1 )); then
     DRAW_INTERVAL=1
 fi
 
-if (( DRAW_INTERVAL < 40 )); then
-    GRAPH_DELAY=
-else
-    GRAPH_DELAY=0.4
-fi
-
-# use zero delay for the first generation of graphs to speed it up
 /usr/share/graphs1090/boot.sh 0 &
 wait || true;
 
 graphs() {
-	/usr/share/graphs1090/graphs1090.sh $1 $GRAPH_DELAY &>/dev/null
+	/usr/share/graphs1090/graphs1090.sh $1 &>/dev/null
 }
 
 # load bash sleep builtin if available

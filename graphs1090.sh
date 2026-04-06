@@ -138,18 +138,6 @@ if [[ $all_large == "yes" ]]; then
 fi
 
 
-# load bash sleep builtin if available
-[[ -f /usr/lib/bash/sleep ]] && enable -f /usr/lib/bash/sleep sleep || true
-
-PRESLEEP="$2"
-
-function prefunc() {
-    if [[ -z "$PRESLEEP" ]]; then
-        return;
-    fi
-    wait
-    sleep "$PRESLEEP" &
-}
 
 #checks a file name for existence and otherwise uses an "empty" rrd as a source so the graphs can still be printed even if the file is missing
 
@@ -167,7 +155,6 @@ check() {
 ## DUMP1090 GRAPHS
 
 aircraft_graph() {
-	prefunc
 	if [[ -n $ul_aircraft ]]; then upper="--rigid --upper-limit $ul_aircraft"; else upper=""; fi
 	rrdtool graph \
 		"$1.tmp" \
@@ -213,7 +200,6 @@ aircraft_message_rate_graph() {
 	then messages="CDEF:messages=messages1,messages2,ADDNAN"
 	else messages="CDEF:messages=messages1"
 	fi
-	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -252,7 +238,6 @@ cpu_graph_dump1090() {
 		airspy_graph2="CDEF:airspyp=airspy,10,/"
 		airspy_graph3="AREA:airspyp#$ABLUE:Airspy"
 	fi
-	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -287,7 +272,6 @@ cpu_graph_dump1090() {
 
 tracks_graph() {
 	if [[ -n $ul_tracks ]]; then upper="--upper-limit $ul_tracks"; else upper=""; fi
-	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -326,7 +310,6 @@ tracks_graph() {
 ## RECEIVER GRAPHS
 
 local_rate_graph() {
-	prefunc
 	if [[ -n $ul_maxima ]]; then upper="--rigid --upper-limit $ul_maxima"; else upper=""; fi
 	if [[ -f $2/dump1090_messages-remote_accepted.rrd ]]; then
         messages="CDEF:messages=messages1,messages2,ADDNAN"
@@ -369,7 +352,6 @@ local_rate_graph() {
 	}
 
 local_trailing_rate_graph() {
-	prefunc
 	if ! [[ -f $2/dump1090_cpu-airspy.rrd ]] && [[ -f $2/dump1090_messages-strong_signals.rrd ]]; then
 		strong1="AREA:strong#$RED:Messages > -3dBFS\g"
 		strong2="GPRINT:strong_percent_vdef: (%1.1lf<span font='2'> </span>%% of messages)"
@@ -538,7 +520,6 @@ local_trailing_rate_graph() {
 	}
 
 range_graph(){
-	prefunc
 	label="Nautical Miles"
 	unitconv=0.000539956803
 	if [[ $range == "statute" ]]; then
@@ -632,7 +613,6 @@ range_graph(){
 
 
 signal_graph() {
-	prefunc
     #rrdtool graph can't handle empty arguments, give it bogus stuff to do
     noise1="CDEF:fake1=signal"
 	if [[ $3 == "UAT" ]]; then
@@ -691,7 +671,6 @@ signal_graph() {
 	}
 
 dump1090_misc() {
-	prefunc
     defines=( \
         "DEF:gain=$(check $2/dump1090_misc-gain_db.rrd):value:AVERAGE" \
     )
@@ -719,7 +698,6 @@ dump1090_misc() {
 	mv "$1.tmp" "$1"
 	}
 df_counts() {
-	prefunc
 	DF=(0 4 5 11 16 17 18 19 20 21)
 	colors=($GREEN $BLUE $DBLUE $ABLUE $RED $DRED $DGREEN $CYAN $LBLUE $LRED)
 	defines=()
@@ -755,7 +733,6 @@ df_counts() {
 	mv "$1.tmp" "$1"
 	}
 signal_airspy() {
-	prefunc
     defines=( \
         "DEF:min=$(check $2/airspy_$3-min.rrd):value:MIN" \
         "DEF:p5=$(check $2/airspy_$3-p5.rrd):value:AVERAGE" \
@@ -806,7 +783,6 @@ signal_airspy() {
 	mv "$1.tmp" "$1"
 	}
 misc_airspy() {
-	prefunc
     defines=( \
         "DEF:lost_buffers=$(check $2/airspy_lost-lost_buffers.rrd):value:AVERAGE" \
         "DEF:aircraft_count=$(check $2/airspy_aircraft-max_aircraft_count.rrd):value:AVERAGE" \
@@ -852,7 +828,6 @@ misc_airspy() {
 
 
 978_aircraft() {
-	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -889,7 +864,6 @@ misc_airspy() {
 
 
 978_messages() {
-	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -917,38 +891,36 @@ function show_graph() {
 }
 
 dump1090_graphs() {
-	aircraft_graph ${DOCUMENTROOT}/dump1090-$2-aircraft-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-	aircraft_message_rate_graph ${DOCUMENTROOT}/dump1090-$2-aircraft_message_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-	cpu_graph_dump1090 ${DOCUMENTROOT}/dump1090-$2-cpu-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-	tracks_graph ${DOCUMENTROOT}/dump1090-$2-tracks-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" 
-	local_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-	local_trailing_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_trailing_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-
-	range_graph ${DOCUMENTROOT}/dump1090-$2-range-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-
-	signal_graph ${DOCUMENTROOT}/dump1090-$2-signal-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
-	if [[ -f ${DB}/$1/dump1090-$2/dump1090_messages-messages_978.rrd ]]
-	then
-        show_graph dump978
-		range_graph ${DOCUMENTROOT}/dump1090-$2-range_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
-		978_aircraft ${DOCUMENTROOT}/dump1090-$2-aircraft_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
-		978_messages ${DOCUMENTROOT}/dump1090-$2-messages_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
-		signal_graph ${DOCUMENTROOT}/dump1090-$2-signal_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
+	aircraft_graph ${DOCUMENTROOT}/dump1090-$2-aircraft-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	aircraft_message_rate_graph ${DOCUMENTROOT}/dump1090-$2-aircraft_message_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	cpu_graph_dump1090 ${DOCUMENTROOT}/dump1090-$2-cpu-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	tracks_graph ${DOCUMENTROOT}/dump1090-$2-tracks-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	local_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	local_trailing_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_trailing_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	range_graph ${DOCUMENTROOT}/dump1090-$2-range-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	signal_graph ${DOCUMENTROOT}/dump1090-$2-signal-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	if [[ -f ${DB}/$1/dump1090-$2/dump1090_messages-messages_978.rrd ]]; then
+		show_graph dump978
+		range_graph ${DOCUMENTROOT}/dump1090-$2-range_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
+		978_aircraft ${DOCUMENTROOT}/dump1090-$2-aircraft_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
+		978_messages ${DOCUMENTROOT}/dump1090-$2-messages_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
+		signal_graph ${DOCUMENTROOT}/dump1090-$2-signal_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
 	fi
 	if [[ -f ${DB}/$1/dump1090-$2/df_count_minute-17.rrd ]]; then
-		df_counts ${DOCUMENTROOT}/df_counts-$2-$4.png ${DB}/$1/dump1090-$2 "df_counts" "$4" "$5"
+		df_counts ${DOCUMENTROOT}/df_counts-$2-$4.png ${DB}/$1/dump1090-$2 "df_counts" "$4" "$5" &
 	fi
 	if [[ -f ${DB}/$1/dump1090-$2/airspy_misc-samplerate.rrd ]]; then
-        show_graph airspy
-        signal_airspy ${DOCUMENTROOT}/airspy-$2-rssi-$4.png ${DB}/$1/dump1090-$2 "rssi" "$4" "$5"
-        signal_airspy ${DOCUMENTROOT}/airspy-$2-snr-$4.png ${DB}/$1/dump1090-$2 "snr" "$4" "$5"
-        signal_airspy ${DOCUMENTROOT}/airspy-$2-noise-$4.png ${DB}/$1/dump1090-$2 "noise" "$4" "$5"
-        misc_airspy ${DOCUMENTROOT}/airspy-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5"
-    fi
-    if [[ -f ${DB}/$1/dump1090-$2/dump1090_misc-gain_db.rrd ]]; then
-        show_graph dump1090-misc
-        dump1090_misc ${DOCUMENTROOT}/dump1090-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5"
-    fi
+		show_graph airspy
+		signal_airspy ${DOCUMENTROOT}/airspy-$2-rssi-$4.png ${DB}/$1/dump1090-$2 "rssi" "$4" "$5" &
+		signal_airspy ${DOCUMENTROOT}/airspy-$2-snr-$4.png ${DB}/$1/dump1090-$2 "snr" "$4" "$5" &
+		signal_airspy ${DOCUMENTROOT}/airspy-$2-noise-$4.png ${DB}/$1/dump1090-$2 "noise" "$4" "$5" &
+		misc_airspy ${DOCUMENTROOT}/airspy-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5" &
+	fi
+	if [[ -f ${DB}/$1/dump1090-$2/dump1090_misc-gain_db.rrd ]]; then
+		show_graph dump1090-misc
+		dump1090_misc ${DOCUMENTROOT}/dump1090-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5" &
+	fi
+	wait
 }
 
 period="$1"
