@@ -50,7 +50,7 @@ sudo nano /etc/default/graphs1090
 Ctrl-x to exit, y (yes) and enter to save.
 
 Checkout available options: <https://raw.githubusercontent.com/matsubo/graphs1090/master/default>
-Recently added: colorscheme=dark
+Recently added: colorscheme=dark, enable_scatter=yes
 
 Reset configuration to defaults:
 ```
@@ -226,18 +226,6 @@ For errors like 404 or the pages not being available in the browser, do the same
 sudo systemctl restart lighttpd
 sudo journalctl --no-pager -u lighttpd
 ls /etc/lighttpd/conf-enabled
-```
-
-
-### Known bugs:
-
-##### disk graphs with kernel >= 4.19 don't work due to a collectd bug
-https://github.com/collectd/collectd/issues/2951
-
-possible sollution: install new collectd version (only on Raspberry pi, if you are using another architecture, this package won't work)
-```
-wget -O /tmp/collectd.deb http://raspbian.raspberrypi.org/raspbian/pool/main/c/collectd/collectd-core_5.8.1-1.3_armhf.deb
-sudo dpkg -i /tmp/collectd.deb
 ```
 
 
