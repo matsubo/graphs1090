@@ -891,36 +891,35 @@ function show_graph() {
 }
 
 dump1090_graphs() {
-	aircraft_graph ${DOCUMENTROOT}/dump1090-$2-aircraft-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	aircraft_message_rate_graph ${DOCUMENTROOT}/dump1090-$2-aircraft_message_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	cpu_graph_dump1090 ${DOCUMENTROOT}/dump1090-$2-cpu-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	tracks_graph ${DOCUMENTROOT}/dump1090-$2-tracks-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	local_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	local_trailing_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_trailing_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	range_graph ${DOCUMENTROOT}/dump1090-$2-range-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
-	signal_graph ${DOCUMENTROOT}/dump1090-$2-signal-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5" &
+	aircraft_graph ${DOCUMENTROOT}/dump1090-$2-aircraft-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	aircraft_message_rate_graph ${DOCUMENTROOT}/dump1090-$2-aircraft_message_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	cpu_graph_dump1090 ${DOCUMENTROOT}/dump1090-$2-cpu-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	tracks_graph ${DOCUMENTROOT}/dump1090-$2-tracks-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	local_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	local_trailing_rate_graph ${DOCUMENTROOT}/dump1090-$2-local_trailing_rate-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	range_graph ${DOCUMENTROOT}/dump1090-$2-range-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
+	signal_graph ${DOCUMENTROOT}/dump1090-$2-signal-$4.png ${DB}/$1/dump1090-$2 "$3" "$4" "$5"
 	if [[ -f ${DB}/$1/dump1090-$2/dump1090_messages-messages_978.rrd ]]; then
 		show_graph dump978
-		range_graph ${DOCUMENTROOT}/dump1090-$2-range_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
-		978_aircraft ${DOCUMENTROOT}/dump1090-$2-aircraft_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
-		978_messages ${DOCUMENTROOT}/dump1090-$2-messages_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
-		signal_graph ${DOCUMENTROOT}/dump1090-$2-signal_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5" &
+		range_graph ${DOCUMENTROOT}/dump1090-$2-range_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
+		978_aircraft ${DOCUMENTROOT}/dump1090-$2-aircraft_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
+		978_messages ${DOCUMENTROOT}/dump1090-$2-messages_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
+		signal_graph ${DOCUMENTROOT}/dump1090-$2-signal_978-$4.png ${DB}/$1/dump1090-$2 "UAT" "$4" "$5"
 	fi
 	if [[ -f ${DB}/$1/dump1090-$2/df_count_minute-17.rrd ]]; then
-		df_counts ${DOCUMENTROOT}/df_counts-$2-$4.png ${DB}/$1/dump1090-$2 "df_counts" "$4" "$5" &
+		df_counts ${DOCUMENTROOT}/df_counts-$2-$4.png ${DB}/$1/dump1090-$2 "df_counts" "$4" "$5"
 	fi
 	if [[ -f ${DB}/$1/dump1090-$2/airspy_misc-samplerate.rrd ]]; then
 		show_graph airspy
-		signal_airspy ${DOCUMENTROOT}/airspy-$2-rssi-$4.png ${DB}/$1/dump1090-$2 "rssi" "$4" "$5" &
-		signal_airspy ${DOCUMENTROOT}/airspy-$2-snr-$4.png ${DB}/$1/dump1090-$2 "snr" "$4" "$5" &
-		signal_airspy ${DOCUMENTROOT}/airspy-$2-noise-$4.png ${DB}/$1/dump1090-$2 "noise" "$4" "$5" &
-		misc_airspy ${DOCUMENTROOT}/airspy-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5" &
+		signal_airspy ${DOCUMENTROOT}/airspy-$2-rssi-$4.png ${DB}/$1/dump1090-$2 "rssi" "$4" "$5"
+		signal_airspy ${DOCUMENTROOT}/airspy-$2-snr-$4.png ${DB}/$1/dump1090-$2 "snr" "$4" "$5"
+		signal_airspy ${DOCUMENTROOT}/airspy-$2-noise-$4.png ${DB}/$1/dump1090-$2 "noise" "$4" "$5"
+		misc_airspy ${DOCUMENTROOT}/airspy-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5"
 	fi
 	if [[ -f ${DB}/$1/dump1090-$2/dump1090_misc-gain_db.rrd ]]; then
 		show_graph dump1090-misc
-		dump1090_misc ${DOCUMENTROOT}/dump1090-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5" &
+		dump1090_misc ${DOCUMENTROOT}/dump1090-$2-misc-$4.png ${DB}/$1/dump1090-$2 "misc" "$4" "$5"
 	fi
-	wait
 }
 
 period="$1"
