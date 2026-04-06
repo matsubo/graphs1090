@@ -3,6 +3,7 @@
 DOCUMENTROOT=/run/graphs1090
 
 renice -n 20 -p $$
+ionice -c 3 -p $$ 2>/dev/null || true
 
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 trap "pkill -P $$ || true; exit 1" SIGTERM SIGINT SIGHUP SIGQUIT
@@ -137,7 +138,15 @@ if [[ $all_large == "yes" ]]; then
 	small="$options --width $lwidth --height $lheight"
 fi
 
+# load bash sleep builtin if available
+[[ -f /usr/lib/bash/sleep ]] && enable -f /usr/lib/bash/sleep sleep || true
 
+PRESLEEP="$2"
+
+prefunc() {
+	if [[ -z "$PRESLEEP" ]]; then return; fi
+	sleep "$PRESLEEP"
+}
 
 #checks a file name for existence and otherwise uses an "empty" rrd as a source so the graphs can still be printed even if the file is missing
 
@@ -156,6 +165,7 @@ check() {
 
 aircraft_graph() {
 	if [[ -n $ul_aircraft ]]; then upper="--rigid --upper-limit $ul_aircraft"; else upper=""; fi
+	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -195,6 +205,7 @@ aircraft_graph() {
 
 aircraft_message_rate_graph() {
 	if [[ -n "$ul_rate_per_aircraft" ]]; then upper="--rigid --upper-limit $ul_rate_per_aircraft"; else upper=""; fi
+	prefunc
 	if [[ -n "$lr_rate_per_aircraft" ]]; then ratio="$lr_rate_per_aircraft"; else ratio=10; fi
 	if [[ -f $2/dump1090_messages-remote_accepted.rrd ]]
 	then messages="CDEF:messages=messages1,messages2,ADDNAN"
@@ -233,6 +244,7 @@ aircraft_message_rate_graph() {
 
 cpu_graph_dump1090() {
 	if [[ -n $ul_adsb_cpu ]]; then upper="--rigid --upper-limit $ul_adsb_cpu"; else upper=""; fi
+	prefunc
 	if [[ -f $2/dump1090_cpu-airspy.rrd ]]; then
 		airspy_graph1="DEF:airspy=$2/dump1090_cpu-airspy.rrd:value:AVERAGE"
 		airspy_graph2="CDEF:airspyp=airspy,10,/"
@@ -272,6 +284,7 @@ cpu_graph_dump1090() {
 
 tracks_graph() {
 	if [[ -n $ul_tracks ]]; then upper="--upper-limit $ul_tracks"; else upper=""; fi
+	prefunc
 	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
@@ -311,6 +324,7 @@ tracks_graph() {
 
 local_rate_graph() {
 	if [[ -n $ul_maxima ]]; then upper="--rigid --upper-limit $ul_maxima"; else upper=""; fi
+	prefunc
 	if [[ -f $2/dump1090_messages-remote_accepted.rrd ]]; then
         messages="CDEF:messages=messages1,messages2,ADDNAN"
 	else
@@ -353,6 +367,7 @@ local_rate_graph() {
 
 local_trailing_rate_graph() {
 	if ! [[ -f $2/dump1090_cpu-airspy.rrd ]] && [[ -f $2/dump1090_messages-strong_signals.rrd ]]; then
+	prefunc
 		strong1="AREA:strong#$RED:Messages > -3dBFS\g"
 		strong2="GPRINT:strong_percent_vdef: (%1.1lf<span font='2'> </span>%% of messages)"
     else
@@ -521,6 +536,7 @@ local_trailing_rate_graph() {
 
 range_graph(){
 	label="Nautical Miles"
+	prefunc
 	unitconv=0.000539956803
 	if [[ $range == "statute" ]]; then
 		unitconv=0.000621371
@@ -614,6 +630,7 @@ range_graph(){
 
 signal_graph() {
     #rrdtool graph can't handle empty arguments, give it bogus stuff to do
+	prefunc
     noise1="CDEF:fake1=signal"
 	if [[ $3 == "UAT" ]]; then
 		defines=( \
@@ -672,6 +689,7 @@ signal_graph() {
 
 dump1090_misc() {
     defines=( \
+	prefunc
         "DEF:gain=$(check $2/dump1090_misc-gain_db.rrd):value:AVERAGE" \
     )
 	if [[ -n "$ul_dump1090_misc" ]]; then upper="--rigid --upper-limit $ul_dump1090_misc"; else upper=""; fi
@@ -699,6 +717,7 @@ dump1090_misc() {
 	}
 df_counts() {
 	DF=(0 4 5 11 16 17 18 19 20 21)
+	prefunc
 	colors=($GREEN $BLUE $DBLUE $ABLUE $RED $DRED $DGREEN $CYAN $LBLUE $LRED)
 	defines=()
 	graphs=()
@@ -734,6 +753,7 @@ df_counts() {
 	}
 signal_airspy() {
     defines=( \
+	prefunc
         "DEF:min=$(check $2/airspy_$3-min.rrd):value:MIN" \
         "DEF:p5=$(check $2/airspy_$3-p5.rrd):value:AVERAGE" \
         "DEF:quart1=$(check $2/airspy_$3-q1.rrd):value:AVERAGE" \
@@ -784,6 +804,7 @@ signal_airspy() {
 	}
 misc_airspy() {
     defines=( \
+	prefunc
         "DEF:lost_buffers=$(check $2/airspy_lost-lost_buffers.rrd):value:AVERAGE" \
         "DEF:aircraft_count=$(check $2/airspy_aircraft-max_aircraft_count.rrd):value:AVERAGE" \
         "DEF:gain=$(check $2/airspy_misc-gain.rrd):value:AVERAGE" \
@@ -829,6 +850,7 @@ misc_airspy() {
 
 978_aircraft() {
 	rrdtool graph \
+	prefunc
 		"$1.tmp" \
 		--end "$END_TIME" \
 		--start end-$4 \
@@ -865,6 +887,7 @@ misc_airspy() {
 
 978_messages() {
 	rrdtool graph \
+	prefunc
 		"$1.tmp" \
 		--end "$END_TIME" \
 		--start end-$4 \

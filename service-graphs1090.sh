@@ -3,8 +3,9 @@
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 trap "pkill -P $$ || true; exit 0" SIGTERM SIGINT SIGHUP SIGQUIT
 
-# make sure we're nice :)
+# run at lowest CPU and I/O priority
 renice 20 $$ || true
+ionice -c 3 -p $$ 2>/dev/null || true
 
 DB=/var/lib/collectd/rrd
 
@@ -30,11 +31,17 @@ if (( DRAW_INTERVAL < 1 )); then
     DRAW_INTERVAL=1
 fi
 
+if (( DRAW_INTERVAL < 40 )); then
+    GRAPH_DELAY=
+else
+    GRAPH_DELAY=0.4
+fi
+
 /usr/share/graphs1090/boot.sh 0 &
 wait || true;
 
 graphs() {
-	/usr/share/graphs1090/graphs1090.sh $1 &>/dev/null
+	/usr/share/graphs1090/graphs1090.sh $1 $GRAPH_DELAY &>/dev/null
 }
 
 # load bash sleep builtin if available
