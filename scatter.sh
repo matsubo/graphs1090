@@ -48,5 +48,5 @@ sed -i 's/nan/0/g' "${data_dir}/${date}"
 ln -snf "${data_dir}/${date}" "${data_dir}/latest"
 
 # some cleanup
-find "$data_dir" -maxdepth 1 -type f -print0 | sort -z | head -zn -450 | xargs -0 -r rm -f
+find "$data_dir" -maxdepth 1 -type f -print0 | sort -z | head -zn -3650 | xargs -0 -r rm -f
 rm -rf "${tmp}"
