@@ -688,8 +688,8 @@ signal_graph() {
 	}
 
 dump1090_misc() {
-    defines=( \
 	prefunc
+    defines=( \
         "DEF:gain=$(check $2/dump1090_misc-gain_db.rrd):value:AVERAGE" \
     )
 	if [[ -n "$ul_dump1090_misc" ]]; then upper="--rigid --upper-limit $ul_dump1090_misc"; else upper=""; fi
@@ -752,8 +752,8 @@ df_counts() {
 	mv "$1.tmp" "$1"
 	}
 signal_airspy() {
-    defines=( \
 	prefunc
+    defines=( \
         "DEF:min=$(check $2/airspy_$3-min.rrd):value:MIN" \
         "DEF:p5=$(check $2/airspy_$3-p5.rrd):value:AVERAGE" \
         "DEF:quart1=$(check $2/airspy_$3-q1.rrd):value:AVERAGE" \
@@ -803,8 +803,8 @@ signal_airspy() {
 	mv "$1.tmp" "$1"
 	}
 misc_airspy() {
-    defines=( \
 	prefunc
+    defines=( \
         "DEF:lost_buffers=$(check $2/airspy_lost-lost_buffers.rrd):value:AVERAGE" \
         "DEF:aircraft_count=$(check $2/airspy_aircraft-max_aircraft_count.rrd):value:AVERAGE" \
         "DEF:gain=$(check $2/airspy_misc-gain.rrd):value:AVERAGE" \
@@ -849,8 +849,8 @@ misc_airspy() {
 
 
 978_aircraft() {
-	rrdtool graph \
 	prefunc
+	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
 		--start end-$4 \
@@ -886,8 +886,8 @@ misc_airspy() {
 
 
 978_messages() {
-	rrdtool graph \
 	prefunc
+	rrdtool graph \
 		"$1.tmp" \
 		--end "$END_TIME" \
 		--start end-$4 \
