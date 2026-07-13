@@ -27,17 +27,26 @@ fi
 
 IHTML=/usr/share/graphs1090/html/index.html
 
+# HTML-escape for the document, then escape sed replacement
+# metacharacters (\ & and the # delimiter) for the substitution
+function escape_html() {
+    printf '%s' "$1" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g'
+}
+function escape_sed() {
+    printf '%s' "$1" | sed 's/[\\&#]/\\&/g'
+}
+
 # skip the rewrite when the content already matches to avoid disk writes
 if [[ -n "$WWW_TITLE" ]]; then
-    safe_title=$(printf '%s' "$WWW_TITLE" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+    safe_title=$(escape_html "$WWW_TITLE")
     if ! grep -qsF "<title>${safe_title}</title>" "$IHTML"; then
-        sed -i -e "s#<title>.*</title>#<title>${safe_title}</title>#" "$IHTML"
+        sed -i -e "s#<title>.*</title>#<title>$(escape_sed "$safe_title")</title>#" "$IHTML"
     fi
 fi
 if [[ -n "$WWW_HEADER" ]]; then
-    safe_header=$(printf '%s' "$WWW_HEADER" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+    safe_header=$(escape_html "$WWW_HEADER")
     if ! grep -qsF "<h1>${safe_header}</h1>" "$IHTML"; then
-        sed -i -e "s#<h1>.*</h1>#<h1>${safe_header}</h1>#" "$IHTML"
+        sed -i -e "s#<h1>.*</h1>#<h1>$(escape_sed "$safe_header")</h1>#" "$IHTML"
     fi
 fi
 
