@@ -29,7 +29,6 @@ html/
   index.html        — single-page frontend
   graphs.js         — image URL updates + refresh timer
   portal.css        — all custom styling (dark theme, CSS variables)
-  bootstrap.custom.{light,dark}.css — Bootstrap theming (vendor, do not edit)
 dump1090.py         — collectd Python plugin: reads dump1090 stats.json
 system_stats.py     — collectd Python plugin: reads /proc/meminfo
 install.sh          — installer/updater script
@@ -62,7 +61,6 @@ The OS system graphs (CPU, memory, disk I/O, network bandwidth, temperature) wer
 
 - **Dark theme** via CSS variables in `portal.css` — edit tokens in `:root` to retheme
 - **No external assets** — use system font stack only (`system-ui`, `ui-monospace`)
-- Bootstrap is present as a vendor base but portal.css overrides all visible styles
 - No crosshair feature (removed)
 
 ## Known issues / tech debt (not yet fixed)
@@ -70,7 +68,6 @@ The OS system graphs (CPU, memory, disk I/O, network bandwidth, temperature) wer
 - `graphs1090.sh` is ~970 lines — exceeds the 800-line guideline but splitting it is non-trivial
 - `dump1090.py` has functions exceeding 50 lines (`read_1090` ~230 lines, `read_978` ~180 lines)
 - Unquoted variables remain in several shell scripts (pre-existing; fix incrementally)
-- `tag.sh` is superseded by `release.sh` and can be removed
 
 ## Commit conventions
 
