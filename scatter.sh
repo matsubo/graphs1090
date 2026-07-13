@@ -38,11 +38,10 @@ sed -i -e '1d;2d' "${tmp}/range"
 sed -i -e '1d;2d' "${tmp}/aircraft"
 
 # Combine files to create space separated data file
+# write the final file in one pass to keep sd-card writes low
 join -o 1.1 1.2 2.2 "${tmp}/range" "${tmp}/messages_l" > "${tmp}/tmp"
 join -o 1.1 1.2 1.3 2.2 "${tmp}/tmp" "${tmp}/messages_r" > "${tmp}/tmp1"
-join -o 1.2 1.3 1.4 2.2 "${tmp}/tmp1" "${tmp}/aircraft" > "${data_dir}/${date}"
-
-sed -i 's/nan/0/g' "${data_dir}/${date}"
+join -o 1.2 1.3 1.4 2.2 "${tmp}/tmp1" "${tmp}/aircraft" | sed 's/nan/0/g' > "${data_dir}/${date}"
 
 # update latest symlink for web access
 ln -snf "${data_dir}/${date}" "${data_dir}/latest"

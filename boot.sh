@@ -1,7 +1,7 @@
 #!/bin/bash
 
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
-trap "pkill -P $$ || true; exit 1" SIGTERM SIGINT SIGHUP SIGQUIT
+trap 'pkill -P $$ || true; exit 1' SIGTERM SIGINT SIGHUP SIGQUIT
 
 DB=/var/lib/collectd/rrd
 
@@ -27,13 +27,18 @@ fi
 
 IHTML=/usr/share/graphs1090/html/index.html
 
+# skip the rewrite when the content already matches to avoid disk writes
 if [[ -n "$WWW_TITLE" ]]; then
     safe_title=$(printf '%s' "$WWW_TITLE" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
-    sed -i -e "s#<title>.*</title>#<title>${safe_title}</title>#" "$IHTML"
+    if ! grep -qsF "<title>${safe_title}</title>" "$IHTML"; then
+        sed -i -e "s#<title>.*</title>#<title>${safe_title}</title>#" "$IHTML"
+    fi
 fi
 if [[ -n "$WWW_HEADER" ]]; then
     safe_header=$(printf '%s' "$WWW_HEADER" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
-    sed -i -e "s#<h1>.*</h1>#<h1>${safe_header}</h1>#" "$IHTML"
+    if ! grep -qsF "<h1>${safe_header}</h1>" "$IHTML"; then
+        sed -i -e "s#<h1>.*</h1>#<h1>${safe_header}</h1>#" "$IHTML"
+    fi
 fi
 
 function checkrrd() {
