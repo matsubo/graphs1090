@@ -1,24 +1,13 @@
 #!/bin/bash
 
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
-trap "pkill -P $$ || true; exit 0" SIGTERM SIGINT SIGHUP SIGQUIT
+trap 'pkill -P $$ || true; exit 0' SIGTERM SIGINT SIGHUP SIGQUIT
 
 # run at lowest CPU and I/O priority
 renice 20 $$ || true
 ionice -c 3 -p $$ 2>/dev/null || true
 
-DB=/var/lib/collectd/rrd
-
 source /etc/default/graphs1090
-
-# autodetect and use /run/collectd as DB folder if it exists and has localhost
-# folder having it automatically changed in /etc/default/graphs1090 causes
-# issues for example when the user replaces his configuration with the default
-# which is a valid approach
-if [[ -d /run/collectd/localhost ]]; then
-    DB=/run/collectd
-fi
-
 
 if [[ -z $DRAW_INTERVAL ]]; then
     DRAW_INTERVAL=60

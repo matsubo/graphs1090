@@ -6,7 +6,7 @@ renice -n 20 -p $$
 ionice -c 3 -p $$ 2>/dev/null || true
 
 trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
-trap "pkill -P $$ || true; exit 1" SIGTERM SIGINT SIGHUP SIGQUIT
+trap 'pkill -P $$ || true; exit 1' SIGTERM SIGINT SIGHUP SIGQUIT
 
 mult() {
 	echo $1 $2 | LC_ALL=C awk '{printf "%.9f", $1 * $2}'
@@ -47,11 +47,6 @@ DRED=990000
 LRED=FFCCCB
 
 LIGHTYELLOW=FFFF99
-AYELLOW=ffcc00
-
-
-AGRAY=dddddd
-
 
 DB=/var/lib/collectd/rrd
 
@@ -96,10 +91,6 @@ if [[ "$colorscheme" == "dark" ]]; then
     LRED=a6595c
 
     LIGHTYELLOW=444444
-    AYELLOW=cca300
-
-
-    AGRAY=2a2e31
 fi
 
 
@@ -122,7 +113,7 @@ case $graph_size in
 		lwidth=1440; lheight=310; swidth=796; sheight=414
 		font_size=$(mult $font_size 1.15)
 		;;
-	*|default)
+	*)
 		lwidth=1096; lheight=235; swidth=619; sheight=324
 		;;
 esac
@@ -132,7 +123,6 @@ fontsize="-n TITLE:$(mult 1.1 $font_size):. -n AXIS:$(mult 0.8 $font_size):. -n 
 grid="-c GRID#FFFFFF --grid-dash 2:1"
 options="$grid $fontsize -e $(date +%H:%M) $colors"
 small="$options -D --width $swidth --height $sheight"
-big="$options --width $lwidth --height $lheight"
 
 if [[ $all_large == "yes" ]]; then
 	small="$options --width $lwidth --height $lheight"
@@ -559,10 +549,8 @@ range_graph(){
 	if [[ $3 == "UAT" ]]; then
 		if [[ -n $ul_range_uat ]]; then
             upper="--rigid --upper-limit $ul_range_uat"
-            Y=$(( (ul_range / 300 + 1) * 20))
         else
             upper="";
-            Y=20
         fi
 		defines=( \
 			"DEF:drange=$(check $2/dump1090_range-max_range_978.rrd):value:MAX" \
@@ -575,10 +563,8 @@ range_graph(){
 	else
         if [[ -n $ul_range ]]; then
             upper="--rigid --upper-limit $ul_range"
-            Y=$(( (ul_range / 600 + 1) * 40))
         else
             upper=""
-            Y=40
         fi
 		defines=( \
 			"DEF:drange=$(check $2/dump1090_range-max_range.rrd):value:MAX" \
