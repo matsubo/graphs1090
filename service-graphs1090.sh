@@ -26,6 +26,10 @@ else
     GRAPH_DELAY=0.4
 fi
 
+if [[ -z $DRAW_ALL ]]; then
+    DRAW_ALL=no
+fi
+
 /usr/share/graphs1090/boot.sh 0 &
 wait || true;
 
@@ -45,6 +49,18 @@ do
     sleep "$(( DRAW_INTERVAL - ((SEC - DRAW_OFFSET) % DRAW_INTERVAL) )).$RANDOM"
 
     SEC=$(( 10#$(date -u +%s) ))
+
+    if [[ $DRAW_ALL == yes ]]; then
+        # boot.sh already draws every range, so reuse it rather than
+        # duplicating the range list here.
+        /usr/share/graphs1090/boot.sh $GRAPH_DELAY &>/dev/null
+        # the 00:07 check below never matches when the loop only wakes
+        # once a day, so refresh the scatter data as part of the sweep
+        if [[ "$enable_scatter" == "yes" ]]; then
+            /usr/share/graphs1090/scatter.sh
+        fi
+        continue
+    fi
 
     m=$(( SEC / DRAW_INTERVAL))
 

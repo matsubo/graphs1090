@@ -6,6 +6,14 @@
 # other graphs are drawn at certain multiples of this interval (2h: 2x 8h: 4x 24h: 8x 48h: 16x 7d: 32x ....)
 DRAW_INTERVAL=60
 
+# draw every range on each interval instead of rotating through one range per
+# interval. The rotation above assumes DRAW_INTERVAL is short; with a long one
+# the rarely drawn ranges fall far behind - at DRAW_INTERVAL=86400 the 365d
+# graph would only be redrawn every 1024 days.
+# Set this to yes for a full refresh at a slow cadence, e.g.
+# DRAW_INTERVAL=86400 together with DRAW_ALL=yes redraws everything once a day.
+DRAW_ALL=no
+
 # set range graph to either nautical, statute, or metric
 range=nautical
 # set the right axis unit: (leftaxis, nautical, statute, metric)
