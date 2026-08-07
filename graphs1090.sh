@@ -135,7 +135,10 @@ PRESLEEP="$2"
 
 prefunc() {
 	if [[ -z "$PRESLEEP" ]]; then return; fi
-	sleep "$PRESLEEP"
+	# wait out the previous delay, then start the next one in the background so
+	# it overlaps the rrdtool run instead of being added on top of it
+	wait
+	sleep "$PRESLEEP" &
 }
 
 #checks a file name for existence and otherwise uses an "empty" rrd as a source so the graphs can still be printed even if the file is missing
