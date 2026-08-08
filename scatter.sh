@@ -12,7 +12,7 @@ fi
 # Fetch a day worth of data from the rrds
 data_dir=/var/lib/graphs1090/scatter
 tmp=/run/graphs1090/scatter
-mkdir -p "${tmp}"
+mkdir -p "${tmp}" "${data_dir}"
 
 date=$(date -I --date=yesterday)
 endtime="midnight today"

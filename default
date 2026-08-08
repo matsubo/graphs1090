@@ -20,6 +20,9 @@ range=nautical
 range2=leftaxis
 
 # colorscheme, options so far: default, dark
+# leave this at "default": the web interface has its own light/dark toggle and
+# inverts the graph images itself, so "dark" here is inverted a second time and
+# comes out light on the dark page. Only set it if you view the PNGs directly.
 colorscheme=default
 
 # set graph size, possible values: small, default, large, huge, custom

@@ -54,7 +54,7 @@ Commonly changed options:
 | `DRAW_ALL` | `no` | Draw every range on each interval instead of rotating through one range at a time. |
 | `range` | `nautical` | Range graph unit: `nautical`, `statute`, or `metric`. |
 | `range2` | `leftaxis` | Right axis unit: `leftaxis`, `nautical`, `statute`, or `metric`. |
-| `colorscheme` | `default` | `default` or `dark`. |
+| `colorscheme` | `default` | `default` or `dark`. Keep `default` — the web interface has its own light/dark toggle and inverts the images itself, so `dark` is inverted twice and shows light on the dark page. |
 | `graph_size` | `default` | `small`, `default`, `large`, `huge`, or `custom`. |
 | `all_large` | `no` | Draw the small graphs at full size. |
 | `font_size` | `10.0` | Relative to graph size. |
