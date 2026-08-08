@@ -174,6 +174,7 @@ function toggleTheme() {
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
     updateThemeButton();
+    updateThemeColor();
     // anything drawn by us rather than by rrdtool has to repaint itself
     document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
 }
@@ -184,4 +185,13 @@ function updateThemeButton() {
     btn.textContent = isDarkTheme() ? '☀ Light' : '☾ Dark';
 }
 
+// keep the mobile browser chrome in step with the page background
+function updateThemeColor() {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    if (bg) meta.content = bg;
+}
+
 updateThemeButton();
+updateThemeColor();
