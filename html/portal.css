@@ -142,6 +142,13 @@ h1 {
 
 .text-center { text-align: center; }
 
+/* Scatter plot: sized in CSS, the bitmap is scaled to devicePixelRatio in JS */
+#scatter-canvas {
+    display: block;
+    width: 100%;
+    height: 350px;
+}
+
 @media screen and (max-width: 1000px) {
     .column { flex: 100%; }
 }

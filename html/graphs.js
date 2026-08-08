@@ -163,6 +163,8 @@ function toggleTheme() {
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
     updateThemeButton();
+    // anything drawn by us rather than by rrdtool has to repaint itself
+    document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
 }
 
 function updateThemeButton() {
@@ -172,55 +174,3 @@ function updateThemeButton() {
 }
 
 updateThemeButton();
-
-async function loadScatter() {
-    const panel = document.getElementById('panel_scatter');
-    if (!panel || panel.style.display === 'none') return;
-    const el = document.getElementById('scatter-canvas');
-    if (!el || typeof echarts === 'undefined') return;
-
-    let data;
-    try {
-        const resp = await fetch('scatter/latest');
-        if (!resp.ok) return;
-        const text = await resp.text();
-        data = text.trim().split('\n')
-            .map(l => l.trim().split(/\s+/).map(Number))
-            .filter(r => r.length === 4 && r[0] > 0);
-    } catch (e) { return; }
-
-    const dark = isDarkTheme();
-    const chart = echarts.init(el, dark ? 'dark' : null);
-
-    chart.setOption({
-        backgroundColor: 'transparent',
-        tooltip: {
-            formatter: p => `Range: ${p.value[0].toFixed(1)} NM<br>Aircraft: ${p.value[1]}`
-        },
-        xAxis: {
-            name: 'Max Range (NM)',
-            nameLocation: 'middle',
-            nameGap: 30,
-            type: 'value',
-            splitLine: { lineStyle: { opacity: 0.2 } }
-        },
-        yAxis: {
-            name: 'Aircraft Seen (avg)',
-            nameLocation: 'middle',
-            nameGap: 35,
-            type: 'value',
-            splitLine: { lineStyle: { opacity: 0.2 } }
-        },
-        series: [{
-            type: 'scatter',
-            symbolSize: 4,
-            data: data.map(r => [+(r[0] / 1852).toFixed(1), r[3]]),
-            itemStyle: { opacity: 0.6 }
-        }],
-        grid: { left: 60, right: 20, top: 20, bottom: 50 }
-    });
-
-    window.addEventListener('resize', () => chart.resize());
-}
-
-loadScatter();
