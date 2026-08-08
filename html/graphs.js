@@ -1,7 +1,7 @@
 //*** BEGIN USER DEFINED VARIABLES ***//
 
 // Set the default time frame to use when loading images when the page is first accessed.
-// Can be set to 2h, 8h, 24h, 7d, 30d, or 365d.
+// Can be set to any of the TIME_FRAMES values below.
 let timeFrame = '24h';
 
 // Set the page refresh interval in milliseconds.
@@ -62,7 +62,11 @@ if (usp.getInt('refreshInterval')) {
     }
 }
 
-if (usp.get('timeframe')) {
+// every range the time-frame bar offers; anything else has no graphs on disk
+const TIME_FRAMES = ['2h', '8h', '24h', '48h', '7d', '14d', '30d',
+    '90d', '180d', '365d', '730d', '1095d', '1825d', '3650d'];
+
+if (TIME_FRAMES.includes(usp.get('timeframe'))) {
     timeFrame = usp.get('timeframe');
 }
 
@@ -79,7 +83,7 @@ function switchView(newTimeFrame) {
     clearTimeout(refreshTimer);
     refreshTimer = setTimeout(switchView, refreshInterval);
 
-    if (newTimeFrame) {
+    if (TIME_FRAMES.includes(newTimeFrame)) {
         timeFrame = newTimeFrame;
     }
 
@@ -127,8 +131,15 @@ function switchView(newTimeFrame) {
     document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('btn-' + timeFrame)?.classList.add('active');
 
-    const pathName = window.location.pathname.replace(/\/+/, '/') || '/';
-    window.history.replaceState(null, '', window.location.origin + pathName + '?timeframe=' + timeFrame);
+    // keep any other parameter (refreshInterval) the user arrived with
+    const params = new URLSearchParams(window.location.search);
+    for (const key of [...params.keys()]) {
+        if (key.toLowerCase() === 'timeframe') params.delete(key);
+    }
+    params.set('timeframe', timeFrame);
+
+    const pathName = window.location.pathname.replace(/\/+/g, '/') || '/';
+    window.history.replaceState(null, '', window.location.origin + pathName + '?' + params);
 }
 
 let refreshTimer = null;
