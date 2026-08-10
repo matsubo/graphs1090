@@ -14,6 +14,14 @@ DRAW_INTERVAL=60
 # DRAW_INTERVAL=86400 together with DRAW_ALL=yes redraws everything once a day.
 DRAW_ALL=no
 
+# seconds to wait after the service starts before drawing the initial set of
+# graphs. The graphs live in /run (tmpfs) and are gone after a reboot, so they
+# still have to be drawn at some point - this only keeps that work off the
+# critical path while the rest of the system is still starting up.
+# The web page itself is set up immediately either way.
+# 0 draws them right away (the default).
+BOOT_DRAW_DELAY=0
+
 # set range graph to either nautical, statute, or metric
 range=nautical
 # set the right axis unit: (leftaxis, nautical, statute, metric)

@@ -30,6 +30,21 @@ if [[ -z $DRAW_ALL ]]; then
     DRAW_ALL=no
 fi
 
+if [[ -z $BOOT_DRAW_DELAY ]]; then
+    BOOT_DRAW_DELAY=0
+fi
+
+BOOT_DRAW_DELAY=$(cut -d '.' -f1 <<< $BOOT_DRAW_DELAY)
+BOOT_DRAW_DELAY=$(( 10#$BOOT_DRAW_DELAY ))
+
+if (( BOOT_DRAW_DELAY > 0 )); then
+    # set the web page up right away so it is usable, but hold the graphs
+    # themselves back until the boot-time load has passed
+    /usr/share/graphs1090/boot.sh nographs &
+    wait || true;
+    sleep "$BOOT_DRAW_DELAY"
+fi
+
 /usr/share/graphs1090/boot.sh 0 &
 wait || true;
 
