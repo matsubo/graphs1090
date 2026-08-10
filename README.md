@@ -52,6 +52,7 @@ Commonly changed options:
 | --- | --- | --- |
 | `DRAW_INTERVAL` | `60` | Seconds between draws. Longer ranges are drawn at multiples of this (2h: 2x, 8h: 4x, 24h: 8x, 48h: 16x, 7d: 32x …). |
 | `DRAW_ALL` | `no` | Draw every range on each interval instead of rotating through one range at a time. |
+| `BOOT_DRAW_DELAY` | `0` | Seconds to wait after the service starts before drawing the first set of graphs, to keep that work off a busy boot. |
 | `range` | `nautical` | Range graph unit: `nautical`, `statute`, or `metric`. |
 | `range2` | `leftaxis` | Right axis unit: `leftaxis`, `nautical`, `statute`, or `metric`. |
 | `colorscheme` | `default` | `default` or `dark`. Keep `default` — the web interface has its own light/dark toggle and inverts the images itself, so `dark` is inverted twice and shows light on the dark page. |
@@ -80,6 +81,20 @@ DRAW_ALL=yes
 ```
 
 In this mode the scatter data is refreshed as part of each sweep rather than at 00:07.
+
+### Holding the first draw back after boot (BOOT_DRAW_DELAY)
+
+The graphs live in `/run` (tmpfs), so they are gone after a reboot and have to be drawn again.
+On a single-core receiver that full sweep lands on top of everything else that is starting up.
+
+Set `BOOT_DRAW_DELAY` to the number of seconds to wait first:
+
+```
+BOOT_DRAW_DELAY=600
+```
+
+The web page is still set up immediately, so it is reachable right away — only the images are
+missing until the delay has passed. The default is `0`, which draws them straight away.
 
 ### Reset the configuration to defaults
 
