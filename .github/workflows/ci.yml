@@ -8,17 +8,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # directory globs rather than a hand-kept list, so a new script in
+      # src/ or tools/ is covered without touching this file
       - name: Shell syntax check
         run: |
-          bash -n graphs1090.sh
-          bash -n boot.sh
-          bash -n install.sh
-          bash -n service-graphs1090.sh
-          bash -n malarky.sh
-          bash -n scatter.sh
-          bash -n release.sh
+          set -e
+          for f in install.sh src/*.sh tools/*.sh tools/adjust-scripts-s6-sh dev/*.sh; do
+            echo "checking $f"
+            bash -n "$f"
+          done
 
       - name: Python syntax check
         run: |
-          python3 -m py_compile dump1090.py
-          python3 -m py_compile system_stats.py
+          set -e
+          for f in src/*.py tools/*.py; do
+            echo "checking $f"
+            python3 -m py_compile "$f"
+          done

@@ -141,13 +141,18 @@ if [[ -f /var/lib/collectd/rrd/localhost/dump1090-localhost/dump1090_cpu-airspy.
     rrdtool tune --maximum value:U /var/lib/collectd/rrd/localhost/dump1090-localhost/dump1090_cpu-airspy.rrd
 fi
 
-cp dump1090.db LICENSE $ipath
-cp *.py *.sh $ipath
-cp malarky.conf $ipath
+# the install target stays flat: everything that runs on the receiver is
+# addressed as /usr/share/graphs1090/<name>, by collectd.conf, malarky.conf and
+# service.service among others. Only the repository is split into directories.
+cp src/dump1090.db LICENSE $ipath
+cp src/*.py src/*.sh $ipath
+cp tools/*.py tools/*.sh $ipath
+cp install.sh $ipath
+cp config/malarky.conf $ipath
 chmod u+x $ipath/*.sh
 if ! grep -e 'system_stats' -qs /etc/collectd/collectd.conf &>/dev/null; then
 	cp /etc/collectd/collectd.conf /etc/collectd/collectd.conf.graphs1090 &>/dev/null || true
-	cp collectd.conf /etc/collectd/collectd.conf
+	cp config/collectd.conf /etc/collectd/collectd.conf
 	echo "------------------"
 	echo "Overwriting /etc/collectd/collectd.conf, the old file has been moved to /etc/collectd/collectd.conf.graphs1090"
 	echo "------------------"
@@ -182,11 +187,11 @@ else
 fi
 cp -r html $ipath
 sed -i -e 's|<span id="graphs1090-version">.*</span>|<span id="graphs1090-version"> '"$(head -1 $ipath/version)"'</span>|' "$ipath/html/index.html"
-copyNoClobber default /etc/default/graphs1090
-cp default $ipath/default-config
-cp collectd.conf $ipath/default-collectd.conf
-cp service.service /lib/systemd/system/graphs1090.service
-cp nginx-graphs1090.conf $ipath
+copyNoClobber config/default /etc/default/graphs1090
+cp config/default $ipath/default-config
+cp config/collectd.conf $ipath/default-collectd.conf
+cp config/service.service /lib/systemd/system/graphs1090.service
+cp config/nginx-graphs1090.conf $ipath
 
 if [ -d /etc/lighttpd/conf.d/ ] && ! [ -d /etc/lighttpd/conf-enabled/ ] && ! [ -d /etc/lighttpd/conf-available ] && command -v lighttpd &>/dev/null
 then
@@ -199,10 +204,10 @@ then
 fi
 
 if [[ $lighttpd == yes ]]; then
-    cp 88-graphs1090.conf /etc/lighttpd/conf-available
+    cp config/88-graphs1090.conf /etc/lighttpd/conf-available
     ln -snf /etc/lighttpd/conf-available/88-graphs1090.conf /etc/lighttpd/conf-enabled/88-graphs1090.conf
 
-    cp 95-graphs1090-otherport.conf /etc/lighttpd/conf-available
+    cp config/95-graphs1090-otherport.conf /etc/lighttpd/conf-available
     ln -snf /etc/lighttpd/conf-available/95-graphs1090-otherport.conf /etc/lighttpd/conf-enabled/95-graphs1090-otherport.conf
 
     if ! grep -qs -E -e '^[^#]*"mod_alias"' /etc/lighttpd/lighttpd.conf /etc/lighttp/conf-enabled/* /etc/lighttpd/external.conf; then

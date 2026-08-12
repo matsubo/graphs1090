@@ -21,20 +21,56 @@ This is a fork of [wiedehopf/graphs1090](https://github.com/wiedehopf/graphs1090
 ## Architecture
 
 ```
-graphs1090.sh       — rrdtool graph generation (bash, ~970 lines)
-boot.sh             — startup: sets up HTML, show/hide panels, font size
-service-graphs1090.sh — systemd service entrypoint
-default             — user config file (/etc/default/graphs1090)
-html/
-  index.html        — single-page frontend
-  graphs.js         — image URL updates + refresh timer
-  portal.css        — all custom styling (dark theme, CSS variables)
-dump1090.py         — collectd Python plugin: reads dump1090 stats.json
-system_stats.py     — collectd Python plugin: reads /proc/meminfo
-install.sh          — installer/updater script
-malarky.sh          — enables RAM-based collectd write reduction
-scatter.sh          — generates scatter plot data files
+install.sh            — installer/updater, the curl entry point (must stay at root)
+version               — single source of truth for the version number
+
+src/                  — installed to /usr/share/graphs1090, runs on the receiver
+  graphs1090.sh       — rrdtool graph generation (bash, ~970 lines)
+  boot.sh             — startup: sets up HTML, show/hide panels, font size
+  service-graphs1090.sh — systemd service entrypoint
+  scatter.sh          — generates scatter plot data files
+  malarky.sh          — enables RAM-based collectd write reduction
+  stopMalarky.sh      — reverts it
+  readback.sh         — restores /run/collectd from disk on collectd start
+  writeback.sh        — saves /run/collectd to disk on collectd stop
+  uninstall.sh        — removes the install
+  dump1090.py         — collectd Python plugin: reads dump1090 stats.json
+  system_stats.py     — collectd Python plugin: reads /proc/meminfo
+  dump1090.db         — collectd type definitions
+
+config/               — templates installed to system paths
+  default             — user config    -> /etc/default/graphs1090
+  collectd.conf       —                -> /etc/collectd/collectd.conf
+  malarky.conf        — systemd drop-in for collectd
+  service.service     —                -> /lib/systemd/system/graphs1090.service
+  88-graphs1090.conf, 95-graphs1090-otherport.conf -> lighttpd conf-available
+  nginx-graphs1090.conf — include for nginx users
+
+tools/                — manual maintenance, installed but never run automatically
+  gunzip.sh, rrd-dump.sh, rrd-restore.sh, rrd-integrate-old.sh,
+  generate-adsb.im-backup.sh, new-format.sh, rem_rra.sh,
+  prune.sh, prune-range.sh, prune-value.py, adjust-scripts-s6-sh
+
+dev/                  — repository maintenance, NOT installed
+  release.sh
+
+html/                 — copied wholesale to /usr/share/graphs1090/html
+  index.html          — single-page frontend
+  graphs.js           — image URL updates + refresh timer
+  scatter.js          — canvas scatter plot
+  portal.css          — all custom styling (dark theme, CSS variables)
+
+docs/                 — the long-form documentation the README links to
 ```
+
+### The install target is flat
+
+The repository is split into directories; `/usr/share/graphs1090` is not. Everything
+that runs on the receiver is addressed as `/usr/share/graphs1090/<name>` — by
+`config/collectd.conf` (`ModulePath`), `config/malarky.conf` (`ExecStartPre`,
+`ExecStopPost`), `config/service.service` (`ExecStart`) and the README. `install.sh`
+flattens `src/` and `tools/` into that one directory on purpose. Moving a script
+between `src/` and `tools/` is therefore free; changing the installed path is not.
 
 ## Critical constraints — do not break these
 
@@ -90,11 +126,11 @@ There is no automated test suite. Manual verification:
 
 ## Releasing
 
-Use `release.sh` — never bump version or create releases manually:
+Use `dev/release.sh` from the repository root — never bump version or create releases manually:
 
 ```bash
-./release.sh           # patch bump: 1.1.2 → 1.1.3
-./release.sh --minor   # minor bump: 1.1.2 → 1.2.0
+./dev/release.sh           # patch bump: 1.1.2 → 1.1.3
+./dev/release.sh --minor   # minor bump: 1.1.2 → 1.2.0
 ```
 
 The script updates `version`, commits, pushes, and tags. GitHub Actions (`release.yml`) automatically creates the GitHub release when the tag is pushed.
