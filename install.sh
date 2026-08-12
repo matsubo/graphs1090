@@ -191,6 +191,10 @@ copyNoClobber config/default /etc/default/graphs1090
 cp config/default $ipath/default-config
 cp config/collectd.conf $ipath/default-collectd.conf
 cp config/service.service /lib/systemd/system/graphs1090.service
+# without this a changed unit file is not picked up by the restart further down.
+# it happened to work because malarky.sh reloads, but that is skipped when
+# /usr/share/graphs1090/noMalarky exists.
+systemctl daemon-reload
 cp config/nginx-graphs1090.conf $ipath
 
 if [ -d /etc/lighttpd/conf.d/ ] && ! [ -d /etc/lighttpd/conf-enabled/ ] && ! [ -d /etc/lighttpd/conf-available ] && command -v lighttpd &>/dev/null

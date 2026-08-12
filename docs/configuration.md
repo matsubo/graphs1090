@@ -56,6 +56,10 @@ BOOT_DRAW_DELAY=600
 The web page is still set up immediately, so it is reachable right away — only the images are
 missing until the delay has passed. The default is `0`, which draws them straight away.
 
+This only applies to a real boot. Restarting the service — an update, a config change — keeps the
+graphs that are already drawn, so the page stays populated through the delay and the images are
+simply replaced when the sweep finishes. Their watermark shows when each one was drawn.
+
 `DRAW_ALL` and `BOOT_DRAW_DELAY` are extensions in this fork; upstream ignores both.
 
 ## Reset the configuration to defaults

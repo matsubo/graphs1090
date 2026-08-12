@@ -8,6 +8,12 @@ ExecStart=/usr/share/graphs1090/service-graphs1090.sh
 SyslogIdentifier=graphs1090
 RuntimeDirectory=graphs1090
 RuntimeDirectoryMode=0755
+# keep the drawn graphs across a restart. Without this systemd empties
+# /run/graphs1090 on every stop, so an update or a config change leaves the page
+# with no images until the next draw - and with BOOT_DRAW_DELAY set, for that
+# long. "restart" rather than "yes": an explicit stop still cleans up, and /run
+# is tmpfs so a reboot clears it either way, which is what BOOT_DRAW_DELAY is for.
+RuntimeDirectoryPreserve=restart
 Type=simple
 Restart=always
 RestartSec=30
